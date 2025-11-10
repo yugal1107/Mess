@@ -1,9 +1,11 @@
 import { View, StyleSheet } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
+import { Text, Button } from 'react-native-paper';
 import { Link, useRouter, useLocalSearchParams } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../src/hooks/AuthContext';
 import apiClient from '../src/api/client';
+import StyledTextInput from '../src/components/StyledTextInput';
+import { saveRefreshToken } from '../src/services/tokenStorage';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -26,19 +28,16 @@ export default function LoginScreen() {
     setError('');
     setSuccess('');
     try {
-      // 1. Login to get the token
       const loginResponse = await apiClient.post('/auth/login', { email, password });
-      const { accessToken } = loginResponse.data.data; // Correctly access the nested data object
-      setToken(accessToken);
+      const { accessToken, refreshToken } = loginResponse.data.data;
+      
+      // Save tokens
+      setToken(accessToken); // To memory & sets header
+      await saveRefreshToken(refreshToken); // To SecureStore
 
-      // 2. Set the token for all future API requests
-      apiClient.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-
-      // 3. Fetch user profile
       const profileResponse = await apiClient.get('/user');
-      setUser(profileResponse.data.data); // Also access nested data here
+      setUser(profileResponse.data.data);
 
-      // 4. Navigate to the main app screen
       router.replace('/dashboard');
     } catch (err: any) {
       console.error('Login error:', err.response?.data || err.message);
@@ -55,20 +54,16 @@ export default function LoginScreen() {
       </Text>
       {!!error && <Text style={styles.errorText}>{error}</Text>}
       {!!success && <Text style={styles.successText}>{success}</Text>}
-      <TextInput
+      <StyledTextInput
         label="Email"
-        mode="outlined"
-        style={styles.input}
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
         onChangeText={setEmail}
         disabled={loading}
       />
-      <TextInput
+      <StyledTextInput
         label="Password"
-        mode="outlined"
-        style={styles.input}
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -101,9 +96,6 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     marginBottom: 30,
-  },
-  input: {
-    marginBottom: 15,
   },
   button: {
     marginTop: 10,

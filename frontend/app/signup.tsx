@@ -1,8 +1,9 @@
 import { View, StyleSheet } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
+import { Text, Button } from 'react-native-paper';
 import { Link, useRouter } from 'expo-router';
 import { useState } from 'react';
 import apiClient from '../src/api/client';
+import StyledTextInput from '../src/components/StyledTextInput';
 
 export default function SignUpScreen() {
   const [name, setName] = useState('');
@@ -13,12 +14,10 @@ export default function SignUpScreen() {
   const router = useRouter();
 
   const handleSignUp = async () => {
-    // Frontend Validation
     if (!name || !email || !password) {
       setError('All fields are required.');
       return;
     }
-    // Basic email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Please enter a valid email address.');
@@ -32,9 +31,8 @@ export default function SignUpScreen() {
         name,
         email,
         password,
-        role: 'STUDENT', // Default role for now
+        role: 'STUDENT',
       });
-      // Navigate to login screen with a success message
       router.replace({
         pathname: '/login',
         params: { signup_success: 'true' },
@@ -53,28 +51,22 @@ export default function SignUpScreen() {
         Create Account
       </Text>
       {!!error && <Text style={styles.errorText}>{error}</Text>}
-      <TextInput
+      <StyledTextInput
         label="Name"
-        mode="outlined"
-        style={styles.input}
         value={name}
         onChangeText={setName}
         disabled={loading}
       />
-      <TextInput
+      <StyledTextInput
         label="Email"
-        mode="outlined"
-        style={styles.input}
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
         onChangeText={setEmail}
         disabled={loading}
       />
-      <TextInput
+      <StyledTextInput
         label="Password"
-        mode="outlined"
-        style={styles.input}
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -107,9 +99,6 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     marginBottom: 30,
-  },
-  input: {
-    marginBottom: 15,
   },
   button: {
     marginTop: 10,

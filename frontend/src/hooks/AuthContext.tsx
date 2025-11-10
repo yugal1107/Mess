@@ -1,55 +1,54 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode } from "react";
+import { setClientAccessToken } from "../api/client";
+import { deleteRefreshToken } from "../services/tokenStorage";
+import { UserDto } from "../types/dto"; // Import UserDto
 
-// Define the shape of the user object
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'STUDENT' | 'ADMIN';
-  subscription?: {
-    id: string;
-    status: string;
-    startDate: string;
-    endDate: string;
-  };
-  // Add other user properties as needed
-}
-
-// Define the shape of the context data
 interface AuthContextType {
   token: string | null;
+  user: UserDto | null; // Use UserDto here
+  setUser: (user: UserDto | null) => void;
   setToken: (token: string | null) => void;
-  user: User | null;
-  setUser: (user: User | null) => void;
+  logout: () => Promise<void>;
 }
 
-// Create the context with a default value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Create a provider component
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [token, setTokenState] = useState<string | null>(null);
+  const [user, setUser] = useState<UserDto | null>(null); // Use UserDto here
+
+  const setToken = (newToken: string | null) => {
+    setTokenState(newToken);
+    setClientAccessToken(newToken);
+  };
+
+  const logout = async () => {
+    setUser(null);
+    setToken(null);
+    try {
+      await deleteRefreshToken();
+    } catch (error) {
+      console.error("Failed to delete refresh token:", error);
+      // Token deletion failed, but user is already logged out locally
+      // Consider whether to notify the user or retry
+    }
+  };
 
   const value = {
     token,
     setToken,
     user,
     setUser,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Create a custom hook to use the auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

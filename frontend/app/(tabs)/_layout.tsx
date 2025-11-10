@@ -20,7 +20,24 @@ export default function TabsLayout() {
           ),
         }}
       />
-      {/* We will add more tabs here later */}
+      <Tabs.Screen
+        name="meal-off"
+        options={{
+          title: 'Meal Off',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="food-off" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="account-circle" color={color} size={size} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
