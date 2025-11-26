@@ -1,33 +1,28 @@
+import { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { Text, Button, Card, ActivityIndicator } from "react-native-paper";
+import {
+  Text,
+  Button,
+  Card,
+  ActivityIndicator,
+  RadioButton,
+} from "react-native-paper";
 import { useAuth } from "../../src/hooks/AuthContext";
 import { useRouter } from "expo-router";
-import apiClient from "../../src/api/client";
-import { useQuery } from "@tanstack/react-query";
-import { SubscriptionDto } from "../../src/types/dto"; // Import SubscriptionDto
-
-// Define the fetch function outside the component
-const fetchSubscriptionDetails = async (): Promise<SubscriptionDto> => {
-  try {
-    const response = await apiClient.get("/subscription");
-    if (!response.data.data) {
-      throw new Error("No subscription found");
-    }
-    return response.data.data;
-  } catch (error) {
-    console.error("Failed to fetch subscription details:", error);
-    throw error; // Re-throw to let useQuery handle the error state
-  }
-};
+import {
+  useSubscription,
+  useRequestSubscription,
+} from "../../src/hooks/useSubscription";
 
 export default function DashboardScreen() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const [subscriptionType, setSubscriptionType] = useState<string>("MESS");
 
-  const { data: subscription, isLoading } = useQuery({
-    queryKey: ["subscription"],
-    queryFn: fetchSubscriptionDetails,
-  });
+  // Use the custom hooks
+  const { data: subscription, isLoading } = useSubscription();
+  const { mutate: requestSubscription, isPending: isRequesting } =
+    useRequestSubscription();
 
   const handleLogout = () => {
     logout();
@@ -47,19 +42,64 @@ export default function DashboardScreen() {
       <Text variant="headlineLarge" style={styles.title}>
         Welcome, {user.name}!
       </Text>
-      <Card style={styles.card}>
-        <Card.Title title="Subscription Status" />
-        <Card.Content>
-          {subscription ? (
-            <>
-              <Text variant="titleMedium">Status: {subscription.status}</Text>
-              <Text variant="bodyMedium">Meals Left: {subscription.meals}</Text>
-            </>
-          ) : (
-            <Text>No active subscription found.</Text>
-          )}
-        </Card.Content>
-      </Card>
+
+      {subscription && subscription.status === "ACTIVE" ? (
+        <Card style={styles.card}>
+          <Card.Title title="Subscription Status" />
+          <Card.Content>
+            <Text variant="titleMedium">Status: {subscription.status}</Text>
+            <Text variant="bodyMedium">
+              Type: {subscription.type === "MESS" ? "Mess" : "Home Delivery"}
+            </Text>
+            <Text variant="bodyMedium">Meals Left: {subscription.meals}</Text>
+          </Card.Content>
+        </Card>
+      ) : subscription && subscription.status === "REQUESTED" ? (
+        <Card style={styles.card}>
+          <Card.Title title="Subscription Status" />
+          <Card.Content>
+            <Text variant="titleMedium">Status: {subscription.status}</Text>
+            <Text variant="bodyMedium">
+              Type: {subscription.type === "MESS" ? "Mess" : "Home Delivery"}
+            </Text>
+            <Text variant="bodyMedium">Your request is pending approval.</Text>
+          </Card.Content>
+        </Card>
+      ) : (
+        <Card style={styles.card}>
+          <Card.Title title="No Active Subscription" />
+          <Card.Content>
+            <Text variant="titleMedium" style={{ marginBottom: 10 }}>
+              Select Subscription Type:
+            </Text>
+            <RadioButton.Group
+              onValueChange={(newValue) => setSubscriptionType(newValue)}
+              value={subscriptionType}
+            >
+              <View style={styles.radioOption}>
+                <RadioButton value="MESS" />
+                <Text onPress={() => setSubscriptionType("MESS")}>Mess</Text>
+              </View>
+              <View style={styles.radioOption}>
+                <RadioButton value="HOME_DELIVERY" />
+                <Text onPress={() => setSubscriptionType("HOME_DELIVERY")}>
+                  Home Delivery
+                </Text>
+              </View>
+            </RadioButton.Group>
+            <Button
+              mode="contained"
+              onPress={() => requestSubscription(subscriptionType)}
+              loading={isRequesting}
+              style={styles.requestButton}
+            >
+              Request {subscriptionType === "MESS" ? "Mess" : "Home Delivery"}{" "}
+              Subscription
+            </Button>
+          </Card.Content>
+        </Card>
+      )}
+
       <Button
         mode="contained"
         onPress={handleLogout}
@@ -87,5 +127,13 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     marginTop: 20,
+  },
+  radioOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  requestButton: {
+    marginTop: 10,
   },
 });

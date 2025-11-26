@@ -5,7 +5,7 @@ export interface SignupDto {
   email: string;
   password: string;
   name: string;
-  role?: 'STUDENT' | 'ADMIN'; // Role might be sent by frontend or defaulted by backend
+  role?: "STUDENT" | "ADMIN"; // Role might be sent by frontend or defaulted by backend
 }
 
 export interface LoginDto {
@@ -24,15 +24,15 @@ export interface UserDto {
   id: string;
   name: string;
   email: string;
-  role: 'STUDENT' | 'ADMIN';
+  role: "STUDENT" | "ADMIN";
   // Add other user-related fields if they exist in backend UserDto
 }
 
 // --- Subscription DTOs ---
 export interface SubscriptionDto {
   id: string;
-  status: 'ACTIVE' | 'INACTIVE' | 'REQUESTED';
-  type: 'MONTHLY' | 'QUARTERLY' | 'YEARLY'; // Assuming these types
+  status: "ACTIVE" | "INACTIVE" | "REQUESTED";
+  type: "MESS" | "HOME_DELIVERY";
   meals: number;
   date: string; // LocalDateTime from backend, will be string in TS
 }
@@ -47,17 +47,17 @@ export interface TodayMealOffDto {
 
 export interface CustomMealOffDto {
   id: string;
-  startMeal: 'LUNCH' | 'DINNER';
-  endMeal: 'LUNCH' | 'DINNER';
+  startMeal: "LUNCH" | "DINNER";
+  endMeal: "LUNCH" | "DINNER";
   startDate: string; // LocalDate from backend, will be string in TS (YYYY-MM-DD)
-  endDate: string;   // LocalDate from backend, will be string in TS (YYYY-MM-DD)
+  endDate: string; // LocalDate from backend, will be string in TS (YYYY-MM-DD)
   message?: string;
 }
 
 // --- Notification DTOs ---
 export interface NotificationDto {
   id: string;
-  type: 'SUBSCRIPTION_EXPIRY' | 'MEAL_UPDATE' | 'GENERAL'; // Assuming these types
+  type: "SUBSCRIPTION_EXPIRY" | "MEAL_UPDATE" | "GENERAL"; // Assuming these types
   message: string;
   isRead: boolean;
   timestamp: string; // LocalDateTime from backend
