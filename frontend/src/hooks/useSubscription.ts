@@ -59,13 +59,13 @@ export const useSubscriptionRequests = () => {
 };
 
 export const useAcceptSubscription = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: acceptSubscriptionRequest,
-    onSuccess: () => {
-      // After accepting a request, invalidate the list of requests
-      // so the approved user is removed from the list.
-      queryClient.invalidateQueries({ queryKey: ["subscriptionRequests"] });
-    },
-  });
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: acceptSubscriptionRequest,
+        onSuccess: () => {
+            // After accepting a request, invalidate the list of requests
+            // so the approved user is removed from the list.
+            queryClient.invalidateQueries({ queryKey: ['subscriptionRequests'] });
+        }
+    });
 };

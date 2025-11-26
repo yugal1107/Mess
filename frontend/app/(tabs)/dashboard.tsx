@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, SafeAreaView, View } from "react-native";
 import {
   Text,
   Button,
@@ -31,14 +31,14 @@ export default function DashboardScreen() {
 
   if (!user || isLoading) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ActivityIndicator animating={true} size="large" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text variant="headlineLarge" style={styles.title}>
         Welcome, {user.name}!
       </Text>
@@ -107,7 +107,7 @@ export default function DashboardScreen() {
       >
         Logout
       </Button>
-    </View>
+    </SafeAreaView>
   );
 }
 

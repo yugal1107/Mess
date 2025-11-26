@@ -4,7 +4,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { useAuth } from "../../src/hooks/AuthContext";
 import { ActivityIndicator, View } from "react-native";
 
-export default function TabsLayout() {
+export default function AdminLayout() {
   const theme = useTheme();
   const { user, isLoading } = useAuth();
 
@@ -22,9 +22,9 @@ export default function TabsLayout() {
     return <Redirect href="/login" />;
   }
 
-  // Redirect admins to admin dashboard
-  if (user.role === "ADMIN") {
-    return <Redirect href="/(admin)/requests" />;
+  // Redirect non-admins to student dashboard
+  if (user.role !== "ADMIN") {
+    return <Redirect href="/(tabs)/dashboard" />;
   }
 
   return (
@@ -37,6 +37,7 @@ export default function TabsLayout() {
         name="dashboard"
         options={{
           title: "Dashboard",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="view-dashboard"
@@ -47,21 +48,27 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="meal-off"
+        name="requests"
         options={{
-          title: "Meal Off",
+          title: "Requests",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="food-off" color={color} size={size} />
+            <MaterialCommunityIcons
+              name="clipboard-list-outline"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="users"
         options={{
-          title: "Profile",
+          title: "Users",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
-              name="account-circle"
+              name="account-group"
               color={color}
               size={size}
             />

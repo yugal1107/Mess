@@ -1,47 +1,85 @@
-import { View, StyleSheet } from 'react-native';
-import { Text, Button } from 'react-native-paper';
-import { Link, useRouter, useLocalSearchParams } from 'expo-router';
-import { useState, useEffect } from 'react';
-import { useAuth } from '../src/hooks/AuthContext';
-import apiClient from '../src/api/client';
-import StyledTextInput from '../src/components/StyledTextInput';
-import { saveRefreshToken } from '../src/services/tokenStorage';
+import { View, StyleSheet } from "react-native";
+import { Text, Button } from "react-native-paper";
+import { Link, useRouter, useLocalSearchParams } from "expo-router";
+import { useState, useEffect } from "react";
+import { useAuth } from "../src/hooks/AuthContext";
+import apiClient, { setClientAccessToken } from "../src/api/client";
+import StyledTextInput from "../src/components/StyledTextInput";
+import { saveRefreshToken } from "../src/services/tokenStorage";
+import { getErrorMessage } from "../src/utils/errorHelper";
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const { setToken, setUser } = useAuth();
   const router = useRouter();
   const params = useLocalSearchParams();
 
   useEffect(() => {
-    if (params.signup_success === 'true') {
-      setSuccess('Account created successfully! Please log in.');
+    if (params.signup_success === "true") {
+      setSuccess("Account created successfully! Please log in.");
     }
   }, [params]);
 
+  const validateForm = (): boolean => {
+    if (!email.trim()) {
+      setError("Email is required.");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      return false;
+    }
+    if (!password) {
+      setError("Password is required.");
+      return false;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return false;
+    }
+    return true;
+  };
+
   const handleLogin = async () => {
+    setError("");
+    setSuccess("");
+
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
-    setError('');
-    setSuccess('');
     try {
-      const loginResponse = await apiClient.post('/auth/login', { email, password });
+      const loginResponse = await apiClient.post("/auth/login", {
+        email,
+        password,
+      });
       const { accessToken, refreshToken } = loginResponse.data.data;
-      
-      // Save tokens
-      setToken(accessToken); // To memory & sets header
+
+      // Set token on axios client FIRST (synchronous)
+      setClientAccessToken(accessToken);
+      // Then update React state
+      setToken(accessToken);
       await saveRefreshToken(refreshToken); // To SecureStore
 
-      const profileResponse = await apiClient.get('/user');
-      setUser(profileResponse.data.data);
+      const profileResponse = await apiClient.get("/user");
+      const userData = profileResponse.data.data;
+      setUser(userData);
 
-      router.replace('/dashboard');
+      // Navigate based on user role
+      if (userData.role === "ADMIN") {
+        router.replace("/(admin)/dashboard");
+      } else {
+        router.replace("/(tabs)/dashboard");
+      }
     } catch (err: any) {
-      console.error('Login error:', err.response?.data || err.message);
-      setError(err.response?.data?.message || 'Invalid email or password.');
+      console.error("Login error:", err.response?.data || err.message);
+      setError(getErrorMessage(err, "Invalid email or password."));
     } finally {
       setLoading(false);
     }
@@ -90,11 +128,11 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 20,
   },
   title: {
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 30,
   },
   button: {
@@ -102,15 +140,13 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   errorText: {
-    color: 'red',
-    textAlign: 'center',
+    color: "red",
+    textAlign: "center",
     marginBottom: 10,
   },
   successText: {
-    color: 'green',
-    textAlign: 'center',
+    color: "green",
+    textAlign: "center",
     marginBottom: 10,
   },
 });
-
-

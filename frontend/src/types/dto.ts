@@ -1,5 +1,21 @@
 // src/types/dto.ts
 
+// --- API Response Wrapper ---
+// The backend wraps all responses in this structure via GlobalResponseHandler
+export interface ApiResponse<T> {
+  timeStamp: string;
+  data: T;
+  error: ApiError | null;
+}
+
+export interface ApiError {
+  error: string;
+  message?: string;
+  status?: number;
+  path?: string;
+  timestamp?: string;
+}
+
 // --- Auth DTOs ---
 export interface SignupDto {
   email: string;

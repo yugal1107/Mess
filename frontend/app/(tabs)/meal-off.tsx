@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, SafeAreaView, View } from "react-native";
 import {
   Text,
   Card,
@@ -16,6 +16,7 @@ import {
   useToggleMeal,
   useSetCustomMealOff,
 } from "../../src/hooks/useMealOff";
+import { getErrorMessage } from "../../src/utils/errorHelper";
 
 export default function MealOffScreen() {
   // --- UI State ---
@@ -32,9 +33,11 @@ export default function MealOffScreen() {
 
   // --- Custom Hooks for Data Fetching & Mutations ---
   const { data: todayMealOff, isLoading: isLoadingToday } = useTodayMealOff();
-  const { data: customMealOff, isLoading: isLoadingCustom } = useCustomMealOff();
+  const { data: customMealOff, isLoading: isLoadingCustom } =
+    useCustomMealOff();
   const { mutate: toggleMeal, isPending: isToggling } = useToggleMeal();
-  const { mutate: setCustomMealOff, isPending: isSettingCustom } = useSetCustomMealOff();
+  const { mutate: setCustomMealOff, isPending: isSettingCustom } =
+    useSetCustomMealOff();
 
   const isLoading = isLoadingToday || isLoadingCustom;
 
@@ -58,15 +61,21 @@ export default function MealOffScreen() {
     setSnackbarVisible(true);
   };
 
-  const handleToggle = (meal: "lunch" | "dinner", value: boolean) => {
-    if (value === false) {
-      showSnackbar("To re-enable a meal, please contact the admin for now.");
-      return;
-    }
-    toggleMeal(meal, {
-      onSuccess: (data: any) => showSnackbar(data.data.data.message),
-      onError: (error: any) => showSnackbar(error.response?.data?.error?.error || "An error occurred"),
-    });
+  const handleToggle = (meal: "lunch" | "dinner", newValue: boolean) => {
+    // newValue is the NEW switch state the user wants
+    // If newValue is true, user wants to turn meal OFF
+    // If newValue is false, user wants to turn meal back ON (reverse)
+    const currentlyOff =
+      meal === "lunch" ? todayMealOff?.lunch : todayMealOff?.dinner;
+
+    toggleMeal(
+      { meal, currentlyOff: currentlyOff || false },
+      {
+        onSuccess: (data: any) => showSnackbar(data.data.data.message),
+        onError: (error: any) =>
+          showSnackbar(getErrorMessage(error, "An error occurred")),
+      }
+    );
   };
 
   const handleCustomSubmit = () => {
@@ -74,29 +83,41 @@ export default function MealOffScreen() {
       showSnackbar("Start date must be before or equal to end date.");
       return;
     }
-    setCustomMealOff({
-      startDate: startDate.toLocaleDateString("en-CA"), // YYYY-MM-DD
-      endDate: endDate.toLocaleDateString("en-CA"),
-      startMeal,
-      endMeal,
-    }, {
-      onSuccess: () => showSnackbar("Custom meal off range set successfully!"),
-      onError: (error: any) => showSnackbar(error.response?.data?.error?.error || "Failed to set custom range"),
-    });
+    setCustomMealOff(
+      {
+        startDate: startDate.toLocaleDateString("en-CA"), // YYYY-MM-DD
+        endDate: endDate.toLocaleDateString("en-CA"),
+        startMeal,
+        endMeal,
+      },
+      {
+        onSuccess: () =>
+          showSnackbar("Custom meal off range set successfully!"),
+        onError: (error: any) =>
+          showSnackbar(getErrorMessage(error, "Failed to set custom range")),
+      }
+    );
   };
 
   if (isLoading) {
-    return <ActivityIndicator animating={true} style={styles.container} />;
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator animating={true} />
+      </SafeAreaView>
+    );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text variant="headlineMedium" style={styles.header}>
         Meal Off Management
       </Text>
       <Card style={styles.card}>
         <Card.Title title="Today's Meal" />
         <Card.Content>
+          <Text variant="bodySmall" style={styles.deadlineText}>
+            Lunch deadline: 8:00 AM • Dinner deadline: 4:00 PM
+          </Text>
           <View style={styles.row}>
             <Text variant="bodyLarge">Lunch Off</Text>
             <Switch
@@ -118,31 +139,66 @@ export default function MealOffScreen() {
       <Card style={styles.card}>
         <Card.Title title="Custom Date Range" />
         <Card.Content>
-           <Button onPress={() => setShowStartDatePicker(true)} mode="outlined" style={styles.dateButton}>
+          <Button
+            onPress={() => setShowStartDatePicker(true)}
+            mode="outlined"
+            style={styles.dateButton}
+          >
             Start Date: {startDate.toLocaleDateString()}
           </Button>
           {showStartDatePicker && (
-            <DateTimePicker value={startDate} mode="date" display="default" onChange={(e, d) => { setShowStartDatePicker(false); if (d) setStartDate(d); }} />
+            <DateTimePicker
+              value={startDate}
+              mode="date"
+              display="default"
+              onChange={(e, d) => {
+                setShowStartDatePicker(false);
+                if (d) setStartDate(d);
+              }}
+            />
           )}
           <SegmentedButtons
             value={startMeal}
             onValueChange={setStartMeal}
-            buttons={[{ value: 'LUNCH', label: 'Lunch' }, { value: 'DINNER', label: 'Dinner' }]}
+            buttons={[
+              { value: "LUNCH", label: "Lunch" },
+              { value: "DINNER", label: "Dinner" },
+            ]}
             style={styles.segmentedButtons}
           />
-          <Button onPress={() => setShowEndDatePicker(true)} mode="outlined" style={styles.dateButton}>
+          <Button
+            onPress={() => setShowEndDatePicker(true)}
+            mode="outlined"
+            style={styles.dateButton}
+          >
             End Date: {endDate.toLocaleDateString()}
           </Button>
           {showEndDatePicker && (
-            <DateTimePicker value={endDate} mode="date" display="default" onChange={(e, d) => { setShowEndDatePicker(false); if (d) setEndDate(d); }} />
+            <DateTimePicker
+              value={endDate}
+              mode="date"
+              display="default"
+              onChange={(e, d) => {
+                setShowEndDatePicker(false);
+                if (d) setEndDate(d);
+              }}
+            />
           )}
-           <SegmentedButtons
+          <SegmentedButtons
             value={endMeal}
             onValueChange={setEndMeal}
-            buttons={[{ value: 'LUNCH', label: 'Lunch' }, { value: 'DINNER', label: 'Dinner' }]}
+            buttons={[
+              { value: "LUNCH", label: "Lunch" },
+              { value: "DINNER", label: "Dinner" },
+            ]}
             style={styles.segmentedButtons}
           />
-          <Button mode="contained" style={styles.submitButton} onPress={handleCustomSubmit} loading={isSettingCustom}>
+          <Button
+            mode="contained"
+            style={styles.submitButton}
+            onPress={handleCustomSubmit}
+            loading={isSettingCustom}
+          >
             Submit Custom Off
           </Button>
         </Card.Content>
@@ -154,7 +210,7 @@ export default function MealOffScreen() {
       >
         {snackbarMessage}
       </Snackbar>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -169,6 +225,11 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 20,
+  },
+  deadlineText: {
+    color: "#666",
+    marginBottom: 10,
+    textAlign: "center",
   },
   row: {
     flexDirection: "row",

@@ -90,11 +90,13 @@ apiClient.interceptors.response.use(
       }
 
       try {
+        // Send refresh token in request body for mobile compatibility
         const refreshResponse = await axios.post(
           `${apiClient.defaults.baseURL}/auth/refresh`,
           { refreshToken }
         );
 
+        // Backend wraps response in ApiResponse { data: { id, accessToken, refreshToken } }
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
           refreshResponse.data.data;
 
