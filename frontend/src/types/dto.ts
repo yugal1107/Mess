@@ -72,8 +72,7 @@ export interface CustomMealOffDto {
 
 // --- Notification DTOs ---
 export interface NotificationDto {
-  id: string;
-  type: "SUBSCRIPTION_EXPIRY" | "MEAL_UPDATE" | "GENERAL"; // Assuming these types
+  type: "SUBSCRIPTION_EXPIRY" | "MEAL_UPDATE" | "GENERAL";
   message: string;
   isRead: boolean;
   timestamp: string; // LocalDateTime from backend

@@ -7,7 +7,7 @@ import {
 
 // --- Axios Instance ---
 const apiClient = axios.create({
-  baseURL: "https://sherry-apraxic-luminously.ngrok-free.dev",
+  baseURL: process.env.BASE_API_URL || "http://localhost:8080/api",
   headers: {
     "Content-Type": "application/json",
   },

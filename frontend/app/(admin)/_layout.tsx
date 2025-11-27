@@ -75,6 +75,12 @@ export default function AdminLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="user/[id]"
+        options={{
+          href: null, // Hide from tab bar
+        }}
+      />
     </Tabs>
   );
 }
