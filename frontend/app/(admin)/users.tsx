@@ -1,8 +1,9 @@
-import { FlatList, StyleSheet, Pressable } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, Card, ActivityIndicator, List } from "react-native-paper";
+import { Text, ActivityIndicator } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { useUsers } from "../../src/hooks/useUsers";
+import { UserListItem } from "../../src/components/admin";
 
 export default function AllUsersScreen() {
   const { data: users, isLoading, isError, error } = useUsers();
@@ -39,16 +40,13 @@ export default function AllUsersScreen() {
         data={users}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Pressable onPress={() => handleUserPress(item.id)}>
-            <Card style={styles.card}>
-              <List.Item
-                title={item.name}
-                description={`Email: ${item.email}\nRole: ${item.role}`}
-                descriptionNumberOfLines={2}
-                right={(props) => <List.Icon {...props} icon="chevron-right" />}
-              />
-            </Card>
-          </Pressable>
+          <UserListItem
+            id={item.id}
+            name={item.name}
+            email={item.email}
+            role={item.role}
+            onPress={handleUserPress}
+          />
         )}
         ListEmptyComponent={
           <Text style={styles.emptyText}>No users found.</Text>
@@ -66,10 +64,6 @@ const styles = StyleSheet.create({
   header: {
     textAlign: "center",
     marginVertical: 15,
-  },
-  card: {
-    marginHorizontal: 10,
-    marginVertical: 5,
   },
   errorText: {
     textAlign: "center",

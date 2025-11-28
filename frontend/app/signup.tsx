@@ -1,114 +1,104 @@
-import { View, StyleSheet } from 'react-native';
-import { Text, Button } from 'react-native-paper';
-import { Link, useRouter } from 'expo-router';
-import { useState } from 'react';
-import apiClient from '../src/api/client';
-import StyledTextInput from '../src/components/StyledTextInput';
+import { View } from "react-native";
+import { Text, Button, TextInput } from "react-native-paper";
+import { Link, useRouter } from "expo-router";
+import { useState } from "react";
+import apiClient from "../src/api/client";
+import Container from "@/src/components/common/Container";
 
 export default function SignUpScreen() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSignUp = async () => {
     if (!name || !email || !password) {
-      setError('All fields are required.');
+      setError("All fields are required.");
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address.');
+      setError("Please enter a valid email address.");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
     try {
-      await apiClient.post('/auth/signup', {
+      await apiClient.post("/auth/signup", {
         name,
         email,
         password,
-        role: 'STUDENT',
+        role: "STUDENT",
       });
       router.replace({
-        pathname: '/login',
-        params: { signup_success: 'true' },
+        pathname: "/login",
+        params: { signup_success: "true" },
       });
     } catch (err: any) {
-      console.error('Sign up error:', err.response?.data || err.message);
-      setError(err.response?.data?.message || 'An unexpected error occurred.');
+      console.error("Sign up error:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text variant="displayMedium" style={styles.title}>
-        Create Account
-      </Text>
-      {!!error && <Text style={styles.errorText}>{error}</Text>}
-      <StyledTextInput
-        label="Name"
-        value={name}
-        onChangeText={setName}
-        disabled={loading}
-      />
-      <StyledTextInput
-        label="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-        disabled={loading}
-      />
-      <StyledTextInput
-        label="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        disabled={loading}
-      />
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={handleSignUp}
-        loading={loading}
-        disabled={loading}
-      >
-        Sign Up
-      </Button>
-      <Link href="/login" asChild>
-        <Button mode="text" disabled={loading}>
-          Already have an account? Login
+    <Container>
+      <View className="flex-1 justify-center p-5 bg-surface">
+        <Text
+          variant="displayMedium"
+          className="text-center mb-8 font-bold text-onSurface"
+        >
+          Create Account
+        </Text>
+        {!!error && (
+          <Text className="text-error text-center mb-4 text-sm">{error}</Text>
+        )}
+        <TextInput
+          label="Name"
+          mode="outlined"
+          value={name}
+          onChangeText={setName}
+          disabled={loading}
+          className="mb-4 bg-surface"
+        />
+        <TextInput
+          label="Email"
+          mode="outlined"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+          disabled={loading}
+          className="mb-4 bg-surface"
+        />
+        <TextInput
+          label="Password"
+          mode="outlined"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          disabled={loading}
+          className="mb-4 bg-surface"
+        />
+        <Button
+          mode="contained"
+          onPress={handleSignUp}
+          loading={loading}
+          disabled={loading}
+          className="mt-2"
+        >
+          Sign Up
         </Button>
-      </Link>
-    </View>
+        <Link href="/login" asChild>
+          <Button mode="text" disabled={loading} className="mt-2">
+            Already have an account? Login
+          </Button>
+        </Link>
+      </View>
+    </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    textAlign: 'center',
-    marginBottom: 30,
-  },
-  button: {
-    marginTop: 10,
-    paddingVertical: 5,
-  },
-  errorText: {
-    color: 'red',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-});
-
-

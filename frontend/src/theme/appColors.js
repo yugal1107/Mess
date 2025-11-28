@@ -1,0 +1,33 @@
+// CommonJS module for compatibility with tailwind.config.js
+module.exports = {
+    light: {
+        primary: "#6750A4",
+        onPrimary: "#FFFFFF",
+        primaryContainer: "#EADDFF",
+        onPrimaryContainer: "#21005D",
+        secondary: "#625B71",
+        onSecondary: "#FFFFFF",
+        secondaryContainer: "#E8DEF8",
+        onSecondaryContainer: "#1D192B",
+        outline: "#79747E",
+        surface: "#FEF7FF",
+        onSurface: "#1D1B20",
+        error: "#B3261E",
+        onError: "#FFFFFF",
+    },
+    dark: {
+        primary: "#D0BCFF",
+        onPrimary: "#381E72",
+        primaryContainer: "#4F378B",
+        onPrimaryContainer: "#EADDFF",
+        secondary: "#CCC2DC",
+        onSecondary: "#332D41",
+        secondaryContainer: "#4A4458",
+        onSecondaryContainer: "#E8DEF8",
+        outline: "#938F99",
+        surface: "#141218",
+        onSurface: "#E6E1E5",
+        error: "#F2B8B5",
+        onError: "#601410",
+    },
+};

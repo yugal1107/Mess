@@ -7,7 +7,7 @@ import {
 
 // --- Axios Instance ---
 const apiClient = axios.create({
-  baseURL: process.env.BASE_API_URL || "http://localhost:8080/api",
+  baseURL: process.env.EXPO_PUBLIC_BASE_API_URL || "http://localhost:8080/api",
   headers: {
     "Content-Type": "application/json",
   },

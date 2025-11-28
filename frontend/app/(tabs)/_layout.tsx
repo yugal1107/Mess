@@ -3,6 +3,7 @@ import { useTheme } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useAuth } from "../../src/hooks/AuthContext";
 import { ActivityIndicator, View } from "react-native";
+import Loading from "@/src/components/common/Loading";
 
 export default function TabsLayout() {
   const theme = useTheme();
@@ -10,11 +11,7 @@ export default function TabsLayout() {
 
   // Show loading while checking auth
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <Loading />;
   }
 
   // Redirect to login if not authenticated

@@ -1,15 +1,17 @@
-import { Stack } from 'expo-router';
-import { PaperProvider } from 'react-native-paper';
-import { theme } from '../src/theme/theme';
-import { AuthProvider } from '../src/hooks/AuthContext';
+import { Stack } from "expo-router";
+import { PaperProvider } from "react-native-paper";
+import { theme } from "../src/theme/theme";
+import { AuthProvider } from "../src/hooks/AuthContext";
+import "../src/styles/globals.css"; // Import global CSS
+import "../src/nativewind-config"; // Import NativeWind config for RNP
 import {
   useFonts,
   Roboto_400Regular,
   Roboto_500Medium,
   Roboto_700Bold,
-} from '@expo-google-fonts/roboto';
-import { View } from 'react-native';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+} from "@expo-google-fonts/roboto";
+import { View } from "react-native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Create a client
 const queryClient = new QueryClient();

@@ -1,12 +1,12 @@
-import { View, StyleSheet } from "react-native";
-import { Text, Button } from "react-native-paper";
+import { View } from "react-native";
 import { Link, useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from "react";
+import { Button, TextInput, Text } from "react-native-paper";
 import { useAuth } from "../src/hooks/AuthContext";
 import apiClient, { setClientAccessToken } from "../src/api/client";
-import StyledTextInput from "../src/components/StyledTextInput";
 import { saveRefreshToken } from "../src/services/tokenStorage";
 import { getErrorMessage } from "../src/utils/errorHelper";
+import Container from "@/src/components/common/Container";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -86,67 +86,53 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text variant="displayMedium" style={styles.title}>
-        Welcome Back!
-      </Text>
-      {!!error && <Text style={styles.errorText}>{error}</Text>}
-      {!!success && <Text style={styles.successText}>{success}</Text>}
-      <StyledTextInput
-        label="Email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
-        disabled={loading}
-      />
-      <StyledTextInput
-        label="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        disabled={loading}
-      />
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={handleLogin}
-        loading={loading}
-        disabled={loading}
-      >
-        Login
-      </Button>
-      <Link href="/signup" asChild>
-        <Button mode="text" disabled={loading}>
-          Don't have an account? Sign Up
+    <Container>
+      <View className="flex-1 justify-center p-5 bg-surface">
+        <Text variant="displayMedium" className="mb-8">
+          Welcome Back!
+        </Text>
+        {!!error && (
+          <Text className="text-error text-center mb-4 text-sm">{error}</Text>
+        )}
+        {!!success && (
+          <Text className="text-green-600 text-center mb-4 text-sm">
+            {success}
+          </Text>
+        )}
+        <TextInput
+          label="Email"
+          mode="outlined"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+          disabled={loading}
+          className="mb-4 bg-surface"
+        />
+        <TextInput
+          label="Password"
+          mode="outlined"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          disabled={loading}
+          className="mb-4 bg-surface"
+        />
+        <Button
+          mode="contained"
+          onPress={handleLogin}
+          loading={loading}
+          disabled={loading}
+          className="mt-2"
+        >
+          Login
         </Button>
-      </Link>
-    </View>
+        <Link href="/signup" asChild>
+          <Button mode="text" disabled={loading} className="mt-2">
+            Don't have an account? Sign Up
+          </Button>
+        </Link>
+      </View>
+    </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 20,
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: 30,
-  },
-  button: {
-    marginTop: 10,
-    paddingVertical: 5,
-  },
-  errorText: {
-    color: "red",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  successText: {
-    color: "green",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-});

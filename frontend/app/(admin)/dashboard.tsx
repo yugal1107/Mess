@@ -1,7 +1,8 @@
-import { View, StyleSheet } from 'react-native';
-import { Text, Button } from 'react-native-paper';
-import { useAuth } from '../../src/hooks/AuthContext';
-import { useRouter } from 'expo-router';
+import { View, StyleSheet } from "react-native";
+import { Text, Button } from "react-native-paper";
+import { useAuth } from "../../src/hooks/AuthContext";
+import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AdminDashboardScreen() {
   const { user, logout } = useAuth();
@@ -9,7 +10,7 @@ export default function AdminDashboardScreen() {
 
   const handleLogout = () => {
     logout();
-    router.replace('/login');
+    router.replace("/login");
   };
 
   if (!user) {
@@ -17,23 +18,27 @@ export default function AdminDashboardScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text variant="headlineLarge" style={styles.title}>
         Admin Dashboard
       </Text>
       <Text variant="titleMedium">Welcome, {user.name} (Admin)!</Text>
-      <Button mode="contained" onPress={handleLogout} style={styles.logoutButton}>
+      <Button
+        mode="contained"
+        onPress={handleLogout}
+        style={styles.logoutButton}
+      >
         Logout
       </Button>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   title: {

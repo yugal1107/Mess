@@ -1,13 +1,25 @@
-import { MD3LightTheme as DefaultTheme, configureFonts } from 'react-native-paper';
-import { fontConfig } from './fontConfig';
+import {
+  MD3LightTheme,
+  MD3DarkTheme,
+  configureFonts,
+} from "react-native-paper";
+import { fontConfig } from "./fontConfig";
+import { light, dark } from "./appColors";
 
 export const theme = {
-  ...DefaultTheme,
+  ...MD3LightTheme,
   colors: {
-    ...DefaultTheme.colors,
-    primary: '#8B4350', // A deep, confident raspberry
-    secondary: '#765A5E', // A warm, sophisticated taupe
-    tertiary: '#7C5A31', // A classic, rich brown
+    ...MD3LightTheme.colors,
+    ...light,
+  },
+  fonts: configureFonts({ config: fontConfig }),
+};
+
+export const darkTheme = {
+  ...MD3DarkTheme,
+  colors: {
+    ...MD3DarkTheme.colors,
+    ...dark,
   },
   fonts: configureFonts({ config: fontConfig }),
 };

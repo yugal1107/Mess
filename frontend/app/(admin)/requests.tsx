@@ -1,17 +1,12 @@
 import { FlatList, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import {
-  Text,
-  Button,
-  Card,
-  ActivityIndicator,
-  List,
-} from "react-native-paper";
+import { Text, ActivityIndicator } from "react-native-paper";
 import {
   useSubscriptionRequests,
   useAcceptSubscription,
 } from "../../src/hooks/useSubscription";
 import { useState } from "react";
+import { RequestCard } from "../../src/components/admin";
 
 export default function SubscriptionRequestsScreen() {
   const {
@@ -61,22 +56,13 @@ export default function SubscriptionRequestsScreen() {
         data={requests}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Card style={styles.card}>
-            <List.Item
-              title={item.name}
-              description={item.email}
-              right={() => (
-                <Button
-                  mode="contained"
-                  onPress={() => handleApprove(item.id)}
-                  loading={loadingUserId === item.id}
-                  style={styles.approveButton}
-                >
-                  Approve
-                </Button>
-              )}
-            />
-          </Card>
+          <RequestCard
+            id={item.id}
+            name={item.name}
+            email={item.email}
+            onApprove={handleApprove}
+            isLoading={loadingUserId === item.id}
+          />
         )}
         ListEmptyComponent={
           <Text style={styles.emptyText}>No pending requests.</Text>
@@ -94,13 +80,6 @@ const styles = StyleSheet.create({
   header: {
     textAlign: "center",
     marginVertical: 15,
-  },
-  card: {
-    marginHorizontal: 10,
-    marginVertical: 5,
-  },
-  approveButton: {
-    justifyContent: "center",
   },
   errorText: {
     textAlign: "center",

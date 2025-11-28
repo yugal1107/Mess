@@ -21,7 +21,7 @@ const setMealOff = (meal: "lunch" | "dinner") => {
 
 // Reverse meal off (turn meal back ON)
 const reverseMealOff = (meal: "lunch" | "dinner") => {
-  return apiClient.post(`/mealoff/reverse_${meal}`);
+  return apiClient.delete(`/mealoff/${meal}`);
 };
 
 // Toggle meal based on current state

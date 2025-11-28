@@ -1,14 +1,12 @@
 import { Tabs, Redirect } from "expo-router";
-import { useTheme } from "react-native-paper";
+import { PaperProvider, useTheme } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useAuth } from "../../src/hooks/AuthContext";
 import { ActivityIndicator, View } from "react-native";
 
 export default function AdminLayout() {
-  const theme = useTheme();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading } = useAuth(); // Show loading while checking auth
 
-  // Show loading while checking auth
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -28,6 +26,16 @@ export default function AdminLayout() {
   }
 
   return (
+    <PaperProvider>
+      <AdminTabs />
+    </PaperProvider>
+  );
+}
+
+function AdminTabs() {
+  const theme = useTheme();
+
+  return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
@@ -37,7 +45,7 @@ export default function AdminLayout() {
         name="dashboard"
         options={{
           title: "Dashboard",
-          headerShown: false,
+          headerShown: true,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="view-dashboard"
@@ -51,7 +59,7 @@ export default function AdminLayout() {
         name="requests"
         options={{
           title: "Requests",
-          headerShown: false,
+          headerShown: true,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="clipboard-list-outline"
@@ -65,7 +73,7 @@ export default function AdminLayout() {
         name="users"
         options={{
           title: "Users",
-          headerShown: false,
+          headerShown: true,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-group"
@@ -76,9 +84,19 @@ export default function AdminLayout() {
         }}
       />
       <Tabs.Screen
+        name="notifications"
+        options={{
+          title: "Notifications",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="bell" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="user/[id]"
         options={{
-          href: null, // Hide from tab bar
+          href: null, 
+          headerShown: true,
         }}
       />
     </Tabs>
