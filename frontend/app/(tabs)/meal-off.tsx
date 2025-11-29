@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { Text, Snackbar, ActivityIndicator } from "react-native-paper";
+import { Text, Snackbar } from "react-native-paper";
+import { AxiosError, AxiosResponse } from "axios";
+import { ApiResponse, TodayMealOffDto } from "../../src/types/dto";
 import {
   useTodayMealOff,
   useCustomMealOff,
@@ -13,6 +15,7 @@ import {
 } from "../../src/components/meal-off";
 import Loading from "@/src/components/common/Loading";
 import Container from "@/src/components/common/Container";
+import EmptyState from "@/src/components/common/EmptyState";
 
 export default function MealOffScreen() {
   // --- UI State ---
@@ -26,9 +29,16 @@ export default function MealOffScreen() {
   const [endMeal, setEndMeal] = useState<"LUNCH" | "DINNER">("DINNER");
 
   // --- Custom Hooks for Data Fetching & Mutations ---
-  const { data: todayMealOff, isLoading: isLoadingToday } = useTodayMealOff();
-  const { data: customMealOff, isLoading: isLoadingCustom } =
-    useCustomMealOff();
+  const {
+    data: todayMealOff,
+    isLoading: isLoadingToday,
+    error: todayError,
+  } = useTodayMealOff();
+  const {
+    data: customMealOff,
+    isLoading: isLoadingCustom,
+    error: customError,
+  } = useCustomMealOff();
   const { mutate: toggleMeal, isPending: isToggling } = useToggleMeal();
   const { mutate: setCustomMealOff, isPending: isSettingCustom } =
     useSetCustomMealOff();
@@ -50,6 +60,25 @@ export default function MealOffScreen() {
     setSnackbarVisible(true);
   };
 
+  // Handle 400 Error (Not Subscribed)
+  const error = todayError || customError;
+  if (error) {
+    const status = (error as AxiosError)?.response?.status;
+    if (status === 400) {
+      return (
+        <Container className="p-5">
+          {/* <Text variant="headlineMedium" className="text-center mb-5">
+            Meal Off Management
+          </Text> */}
+          <EmptyState
+            icon="account-off-outline"
+            message="You do not have an active subscription. Please subscribe to manage meal offs."
+          />
+        </Container>
+      );
+    }
+  }
+
   const handleToggle = (meal: "lunch" | "dinner", newValue: boolean) => {
     const currentlyOff =
       meal === "lunch" ? todayMealOff?.lunch : todayMealOff?.dinner;
@@ -57,8 +86,9 @@ export default function MealOffScreen() {
     toggleMeal(
       { meal, currentlyOff: currentlyOff || false },
       {
-        onSuccess: (data: any) => showSnackbar(data.data.data.message),
-        onError: (error: any) =>
+        onSuccess: (response: AxiosResponse<ApiResponse<TodayMealOffDto>>) =>
+          showSnackbar(response.data.data.message || "Meal updated!"),
+        onError: (error: Error) =>
           showSnackbar(getErrorMessage(error, "An error occurred")),
       }
     );
@@ -79,22 +109,21 @@ export default function MealOffScreen() {
       {
         onSuccess: () =>
           showSnackbar("Custom meal off range set successfully!"),
-        onError: (error: any) =>
+        onError: (error: Error) =>
           showSnackbar(getErrorMessage(error, "Failed to set custom range")),
       }
     );
   };
 
   if (isLoading) {
-      return <Loading size="large" />;
+    return <Loading size="large" />;
   }
 
   return (
-    <Container>
-      <Text variant="headlineMedium" className="text-center mb-5">
+    <Container className="px-5">
+      {/* <Text variant="headlineMedium" className="text-center mb-5">
         Meal Off Management
-      </Text>
-
+      </Text> */}
       <TodayMealCard
         lunchOff={todayMealOff?.lunch || false}
         dinnerOff={todayMealOff?.dinner || false}

@@ -16,20 +16,20 @@ import Loading from "@/src/components/common/Loading";
 
 export default function DashboardScreen() {
   const { user } = useAuth();
-  const [subscriptionType, setSubscriptionType] = useState("MESS");
+  const [subscriptionType, setSubscriptionType] = useState<
+    "MESS" | "HOME_DELIVERY"
+  >("MESS");
   const { data: subscription, isLoading } = useSubscription();
   const { mutate: requestSubscription, isPending } = useRequestSubscription();
 
   if (!user || isLoading) {
-    return (
-      <Loading size="large" />
-    );
+    return <Loading size="large" />;
   }
 
   return (
     <SafeAreaView className="flex-1 justify-center items-center">
-      <ScrollView className="flex-1 p-5">
-        <Text variant="headlineLarge" className="mb-10 text-center">
+      <ScrollView className="flex-1 w-full px-5 py-6">
+        <Text variant="headlineMedium" className="mb-10 text-start w-full">
           Welcome, {user.name}!
         </Text>
 
@@ -41,7 +41,7 @@ export default function DashboardScreen() {
           <PendingRequestCard subscription={subscription} />
         )}
 
-        {!subscription && (
+        {subscription?.status === "INACTIVE" && (
           <NoSubscriptionCard
             subscriptionType={subscriptionType}
             setSubscriptionType={setSubscriptionType}

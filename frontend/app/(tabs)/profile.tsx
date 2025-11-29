@@ -1,9 +1,10 @@
-import { View, StyleSheet } from "react-native";
-import { Text, Button, Avatar, Card } from "react-native-paper";
+import { View } from "react-native";
+import { Text, Button, Avatar, Card, useTheme } from "react-native-paper";
 import { useAuth } from "../../src/hooks/AuthContext";
 import { useRouter } from "expo-router";
 
 export default function ProfileScreen() {
+  const theme = useTheme();
   const { user, logout } = useAuth();
   const router = useRouter();
 
@@ -17,30 +18,34 @@ export default function ProfileScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 items-center pt-10 px-5">
       <Avatar.Text
         size={80}
         label={user.name?.[0]?.toUpperCase() || "?"}
-        style={styles.avatar}
+        className="mb-5"
       />
-      <Text variant="headlineLarge" style={styles.name}>
+      <Text variant="headlineLarge" className="mb-1">
         {user.name}
       </Text>
-      <Text variant="bodyLarge" style={styles.email}>
+      <Text
+        variant="bodyLarge"
+        className="mb-8"
+        style={{ color: theme.colors.outline }}
+      >
         {user.email}
       </Text>
-      <Card style={styles.card}>
+      <Card className="w-full mb-8">
         <Card.Content>
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Role</Text>
-            <Text style={styles.infoValue}>{user.role}</Text>
+          <View className="flex-row justify-between py-2.5">
+            <Text style={{ color: theme.colors.outline }}>Role</Text>
+            <Text className="font-bold">{user.role}</Text>
           </View>
         </Card.Content>
       </Card>
       <Button
         mode="contained"
         onPress={handleLogout}
-        style={styles.logoutButton}
+        className="w-full"
         icon="logout"
       >
         Logout
@@ -48,42 +53,3 @@ export default function ProfileScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    paddingTop: 40,
-    paddingHorizontal: 20,
-  },
-  avatar: {
-    marginBottom: 20,
-  },
-  name: {
-    marginBottom: 5,
-  },
-  email: {
-    marginBottom: 30,
-    color: "#666",
-  },
-  card: {
-    width: "100%",
-    marginBottom: 30,
-  },
-  infoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-  },
-  infoLabel: {
-    fontSize: 16,
-    color: "#888",
-  },
-  infoValue: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  logoutButton: {
-    width: "100%",
-  },
-});

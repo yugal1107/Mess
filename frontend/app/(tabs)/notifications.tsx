@@ -1,6 +1,5 @@
-import { FlatList, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text } from "react-native-paper";
+import { FlatList } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 import { useNotifications } from "../../src/hooks/useNotifications";
 import Loading from "@/src/components/common/Loading";
 import Container from "@/src/components/common/Container";
@@ -8,6 +7,7 @@ import EmptyState from "@/src/components/common/EmptyState";
 import { NotificationItem } from "@/src/components/notifications";
 
 export default function NotificationsScreen() {
+  const theme = useTheme();
   const {
     data: notifications,
     isLoading,
@@ -22,19 +22,19 @@ export default function NotificationsScreen() {
 
   if (isError) {
     return (
-      <SafeAreaView className="flex-1 justify-center items-center">
-        <Text className="text-red-500 text-center">
+      <Container className="justify-center items-center">
+        <Text className="text-center" style={{ color: theme.colors.error }}>
           Failed to load notifications: {error?.message}
         </Text>
-      </SafeAreaView>
+      </Container>
     );
   }
 
   return (
     <Container className="p-0">
-      <Text variant="headlineMedium" className="text-center my-4">
+      {/* <Text variant="headlineMedium" className="text-center my-4">
         Notifications
-      </Text>
+      </Text> */}
       <FlatList
         data={notifications}
         keyExtractor={(item, index) => `${item.timestamp}-${index}`}

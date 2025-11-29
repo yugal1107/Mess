@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { Text, Avatar, Chip, useTheme } from "react-native-paper";
 
 interface ProfileHeaderProps {
@@ -19,20 +19,25 @@ export default function ProfileHeader({
   };
 
   return (
-    <View style={styles.container}>
+    <View className="items-center py-8 px-5">
       <Avatar.Text
         size={80}
         label={name?.[0]?.toUpperCase() || "?"}
         style={{ backgroundColor: theme.colors.primary }}
       />
-      <Text variant="headlineMedium" style={styles.name}>
+      <Text variant="headlineMedium" className="mt-4 font-bold">
         {name}
       </Text>
-      <Text variant="bodyLarge" style={styles.email}>
+      <Text
+        variant="bodyLarge"
+        className="mt-1"
+        style={{ color: theme.colors.outline }}
+      >
         {email}
       </Text>
       <Chip
-        style={[styles.roleChip, { backgroundColor: getRoleColor(role) }]}
+        className="mt-3"
+        style={{ backgroundColor: getRoleColor(role) }}
         textStyle={{ color: "#fff" }}
       >
         {role}
@@ -40,22 +45,3 @@ export default function ProfileHeader({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    paddingVertical: 30,
-    paddingHorizontal: 20,
-  },
-  name: {
-    marginTop: 15,
-    fontWeight: "bold",
-  },
-  email: {
-    color: "#666",
-    marginTop: 5,
-  },
-  roleChip: {
-    marginTop: 10,
-  },
-});

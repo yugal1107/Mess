@@ -1,18 +1,15 @@
 import { Tabs, Redirect } from "expo-router";
-import { PaperProvider, useTheme } from "react-native-paper";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useTheme } from "react-native-paper";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useAuth } from "../../src/hooks/AuthContext";
-import { ActivityIndicator, View } from "react-native";
+import Loading from "../../src/components/common/Loading";
 
 export default function AdminLayout() {
-  const { user, isLoading } = useAuth(); // Show loading while checking auth
+  const theme = useTheme();
+  const { user, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return <Loading size="large" />;
   }
 
   // Redirect to login if not authenticated
@@ -24,16 +21,6 @@ export default function AdminLayout() {
   if (user.role !== "ADMIN") {
     return <Redirect href="/(tabs)/dashboard" />;
   }
-
-  return (
-    <PaperProvider>
-      <AdminTabs />
-    </PaperProvider>
-  );
-}
-
-function AdminTabs() {
-  const theme = useTheme();
 
   return (
     <Tabs
@@ -58,7 +45,7 @@ function AdminTabs() {
       <Tabs.Screen
         name="requests"
         options={{
-          title: "Requests",
+          title: "User Requests",
           headerShown: true,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
@@ -95,7 +82,7 @@ function AdminTabs() {
       <Tabs.Screen
         name="user/[id]"
         options={{
-          href: null, 
+          href: null,
           headerShown: true,
         }}
       />

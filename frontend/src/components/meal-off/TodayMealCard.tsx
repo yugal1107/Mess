@@ -1,5 +1,5 @@
-import { StyleSheet, View } from "react-native";
-import { Card, Text, Switch } from "react-native-paper";
+import { View } from "react-native";
+import { Card, Text, Switch, useTheme } from "react-native-paper";
 
 interface TodayMealCardProps {
   lunchOff: boolean;
@@ -14,14 +14,20 @@ export default function TodayMealCard({
   isToggling,
   onToggle,
 }: TodayMealCardProps) {
+  const theme = useTheme();
+
   return (
-    <Card style={styles.card}>
-      <Card.Title title="Today's Meal" />
+    <Card className="mb-5">
+      <Card.Title title="Today&apos;s Meal Off" titleVariant="headlineSmall" />
       <Card.Content>
-        <Text variant="bodySmall" style={styles.deadlineText}>
+        <Text
+          variant="bodySmall"
+          className="mb-2.5"
+          style={{ color: theme.colors.error }}
+        >
           Lunch deadline: 8:00 AM • Dinner deadline: 4:00 PM
         </Text>
-        <View style={styles.row}>
+        <View className="flex-row justify-between items-center py-2.5">
           <Text variant="bodyLarge">Lunch Off</Text>
           <Switch
             disabled={isToggling}
@@ -29,7 +35,7 @@ export default function TodayMealCard({
             onValueChange={(val) => onToggle("lunch", val)}
           />
         </View>
-        <View style={styles.row}>
+        <View className="flex-row justify-between items-center py-2.5">
           <Text variant="bodyLarge">Dinner Off</Text>
           <Switch
             disabled={isToggling}
@@ -41,20 +47,3 @@ export default function TodayMealCard({
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    marginBottom: 20,
-  },
-  deadlineText: {
-    color: "#666",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-});

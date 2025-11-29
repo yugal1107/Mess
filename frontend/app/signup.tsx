@@ -1,11 +1,11 @@
 import { View } from "react-native";
-import { Text, Button, TextInput } from "react-native-paper";
+import { Text, Button, TextInput, useTheme } from "react-native-paper";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import apiClient from "../src/api/client";
-import Container from "@/src/components/common/Container";
 
 export default function SignUpScreen() {
+  const theme = useTheme();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,16 +46,24 @@ export default function SignUpScreen() {
   };
 
   return (
-    <Container>
-      <View className="flex-1 justify-center p-5 bg-surface">
+      <View
+        className="flex-1 justify-center p-5"
+        style={{ backgroundColor: theme.colors.surface }}
+      >
         <Text
           variant="displayMedium"
-          className="text-center mb-8 font-bold text-onSurface"
+          className="text-center mb-8 font-bold"
+          style={{ color: theme.colors.onSurface }}
         >
           Create Account
         </Text>
         {!!error && (
-          <Text className="text-error text-center mb-4 text-sm">{error}</Text>
+          <Text
+            className="text-center mb-4 text-sm"
+            style={{ color: theme.colors.error }}
+          >
+            {error}
+          </Text>
         )}
         <TextInput
           label="Name"
@@ -63,7 +71,8 @@ export default function SignUpScreen() {
           value={name}
           onChangeText={setName}
           disabled={loading}
-          className="mb-4 bg-surface"
+          className="mb-4"
+          style={{ backgroundColor: theme.colors.surface }}
         />
         <TextInput
           label="Email"
@@ -73,7 +82,8 @@ export default function SignUpScreen() {
           value={email}
           onChangeText={setEmail}
           disabled={loading}
-          className="mb-4 bg-surface"
+          className="mb-4"
+          style={{ backgroundColor: theme.colors.surface }}
         />
         <TextInput
           label="Password"
@@ -82,7 +92,8 @@ export default function SignUpScreen() {
           value={password}
           onChangeText={setPassword}
           disabled={loading}
-          className="mb-4 bg-surface"
+          className="mb-4"
+          style={{ backgroundColor: theme.colors.surface }}
         />
         <Button
           mode="contained"
@@ -99,6 +110,5 @@ export default function SignUpScreen() {
           </Button>
         </Link>
       </View>
-    </Container>
   );
 }

@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { StyleSheet } from "react-native";
 import { Card, List, Button } from "react-native-paper";
 
 interface RequestCardProps {
@@ -18,7 +16,7 @@ export default function RequestCard({
   isLoading,
 }: RequestCardProps) {
   return (
-    <Card style={styles.card}>
+    <Card className="mx-3 my-1.5">
       <List.Item
         title={name}
         description={email}
@@ -27,7 +25,7 @@ export default function RequestCard({
             mode="contained"
             onPress={() => onApprove(id)}
             loading={isLoading}
-            style={styles.approveButton}
+            className="justify-center"
           >
             Approve
           </Button>
@@ -36,13 +34,3 @@ export default function RequestCard({
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    marginHorizontal: 10,
-    marginVertical: 5,
-  },
-  approveButton: {
-    justifyContent: "center",
-  },
-});

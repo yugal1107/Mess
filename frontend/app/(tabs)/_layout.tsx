@@ -1,8 +1,7 @@
 import { Tabs, Redirect } from "expo-router";
 import { useTheme } from "react-native-paper";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useAuth } from "../../src/hooks/AuthContext";
-import { ActivityIndicator, View } from "react-native";
 import Loading from "@/src/components/common/Loading";
 
 export default function TabsLayout() {

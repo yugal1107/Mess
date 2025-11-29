@@ -1,8 +1,7 @@
-import { View, StyleSheet } from "react-native";
 import { Text, Button } from "react-native-paper";
 import { useAuth } from "../../src/hooks/AuthContext";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Container from "../../src/components/common/Container";
 
 export default function AdminDashboardScreen() {
   const { user, logout } = useAuth();
@@ -18,33 +17,14 @@ export default function AdminDashboardScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text variant="headlineLarge" style={styles.title}>
+    <Container className="justify-center items-center">
+      <Text variant="headlineLarge" className="mb-5">
         Admin Dashboard
       </Text>
       <Text variant="titleMedium">Welcome, {user.name} (Admin)!</Text>
-      <Button
-        mode="contained"
-        onPress={handleLogout}
-        style={styles.logoutButton}
-      >
+      <Button mode="contained" onPress={handleLogout} className="mt-5">
         Logout
       </Button>
-    </SafeAreaView>
+    </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  title: {
-    marginBottom: 20,
-  },
-  logoutButton: {
-    marginTop: 20,
-  },
-});

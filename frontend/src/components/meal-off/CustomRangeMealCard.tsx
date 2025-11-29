@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { StyleSheet } from "react-native";
-import { Card, Button, SegmentedButtons } from "react-native-paper";
+import { Card, Button, SegmentedButtons, Text } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 type MealType = "LUNCH" | "DINNER";
@@ -35,8 +35,18 @@ export default function CustomRangeMealCard({
 
   return (
     <Card style={styles.card}>
-      <Card.Title title="Custom Date Range" />
+      <Card.Title title="Custom Meal Off" titleVariant="headlineSmall" />
       <Card.Content>
+        <Text variant="bodyMedium" className="mb-4">
+          Set a custom range for meal off
+        </Text>
+        <Text variant="bodySmall" className="mb-2">
+          Select the start and end dates along with the meal type for each.
+        </Text>
+        <Text variant="bodySmall" className="mb-4">
+          <Text className="font-bold">Note</Text>
+          : Start date must be before or equal to end date.
+        </Text>
         <Button
           onPress={() => setShowStartDatePicker(true)}
           mode="outlined"

@@ -1,32 +1,25 @@
-import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ActivityIndicator, Text } from "react-native-paper";
+import { ActivityIndicator, Text, useTheme } from "react-native-paper";
 
 interface LoadingScreenProps {
   message?: string;
 }
 
 export default function LoadingScreen({ message }: LoadingScreenProps) {
+  const theme = useTheme();
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 justify-center items-center">
       <ActivityIndicator animating={true} size="large" />
       {message && (
-        <Text variant="bodyMedium" style={styles.message}>
+        <Text
+          variant="bodyMedium"
+          className="mt-4"
+          style={{ color: theme.colors.outline }}
+        >
           {message}
         </Text>
       )}
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  message: {
-    marginTop: 16,
-    color: "#666",
-  },
-});

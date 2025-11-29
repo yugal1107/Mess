@@ -10,11 +10,24 @@ import {
   Roboto_500Medium,
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
-import { View } from "react-native";
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import * as SplashScreen from "expo-splash-screen";
 
-// Create a client
-const queryClient = new QueryClient();
+// Prevent splash screen from auto-hiding
+SplashScreen.preventAutoHideAsync();
+
+// Create a client with sensible defaults for mobile
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 2,
+      refetchOnWindowFocus: false, // Not relevant for mobile
+      refetchOnReconnect: true,
+    },
+  },
+});
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -23,8 +36,14 @@ export default function RootLayout() {
     Roboto_700Bold,
   });
 
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) {
-    return <View />;
+    return null;
   }
 
   return (

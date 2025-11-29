@@ -1,5 +1,5 @@
-import { View, StyleSheet } from "react-native";
-import { Text, Card, Chip } from "react-native-paper";
+import { View } from "react-native";
+import { Text, Card, Chip, useTheme } from "react-native-paper";
 
 interface SubscriptionData {
   status: string;
@@ -27,14 +27,18 @@ const getStatusColor = (status: string | undefined) => {
 export default function UserSubscriptionCard({
   subscription,
 }: UserSubscriptionCardProps) {
+  const theme = useTheme();
+
   return (
-    <Card style={styles.card}>
+    <Card className="mx-4 my-2.5">
       <Card.Title title="Subscription Details" />
       <Card.Content>
         {subscription ? (
           <>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Status</Text>
+            <View className="flex-row justify-between items-center py-2.5">
+              <Text className="text-sm" style={{ color: theme.colors.outline }}>
+                Status
+              </Text>
               <Chip
                 compact
                 style={{
@@ -45,62 +49,48 @@ export default function UserSubscriptionCard({
                 {subscription.status}
               </Chip>
             </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Type</Text>
-              <Text style={styles.infoValue}>
+            <View className="flex-row justify-between items-center py-2.5">
+              <Text className="text-sm" style={{ color: theme.colors.outline }}>
+                Type
+              </Text>
+              <Text className="text-sm font-medium">
                 {subscription.type === "MESS" ? "Mess" : "Home Delivery"}
               </Text>
             </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Meals Remaining</Text>
-              <Text style={[styles.infoValue, styles.mealsCount]}>
+            <View className="flex-row justify-between items-center py-2.5">
+              <Text className="text-sm" style={{ color: theme.colors.outline }}>
+                Meals Remaining
+              </Text>
+              <Text
+                className="text-lg font-bold"
+                style={{ color: theme.colors.primary }}
+              >
                 {subscription.meals}
               </Text>
             </View>
             {subscription.date && (
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Started On</Text>
-                <Text style={styles.infoValue}>
+              <View className="flex-row justify-between items-center py-2.5">
+                <Text
+                  className="text-sm"
+                  style={{ color: theme.colors.outline }}
+                >
+                  Started On
+                </Text>
+                <Text className="text-sm font-medium">
                   {new Date(subscription.date).toLocaleDateString()}
                 </Text>
               </View>
             )}
           </>
         ) : (
-          <Text style={styles.noSubscription}>No active subscription</Text>
+          <Text
+            className="text-center py-5"
+            style={{ color: theme.colors.outline }}
+          >
+            No active subscription
+          </Text>
         )}
       </Card.Content>
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    margin: 15,
-    marginBottom: 10,
-  },
-  infoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  infoLabel: {
-    fontSize: 14,
-    color: "#666",
-  },
-  infoValue: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  mealsCount: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#27ae60",
-  },
-  noSubscription: {
-    textAlign: "center",
-    color: "#888",
-    paddingVertical: 20,
-  },
-});

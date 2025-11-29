@@ -22,7 +22,7 @@ const formatTimestamp = (timestamp: string): string => {
 // Get icon based on notification type
 const getNotificationIcon = (
   type: NotificationDto["type"]
-): { name: string; color: string } => {
+): { name: "alert-circle" | "food" | "bell" ; color: string } => {
   switch (type) {
     case "SUBSCRIPTION_EXPIRY":
       return { name: "alert-circle", color: "#ed1010ff" };
@@ -44,7 +44,7 @@ export default function NotificationItem({ item }: NotificationItemProps) {
 
   return (
     <Card
-      className={`my-1 mx-1 ${!item.isRead ? "bg-primaryContainer" : ""}`}
+      className="my-1 mx-1"
       style={
         !item.isRead ? { backgroundColor: theme.colors.primaryContainer } : {}
       }
@@ -63,12 +63,15 @@ export default function NotificationItem({ item }: NotificationItemProps) {
           >
             {item.message}
           </Text>
-          <Text variant="bodySmall" className="text-gray-500">
+          <Text variant="bodySmall" style={{ color: theme.colors.outline }}>
             {formatTimestamp(item.timestamp)}
           </Text>
         </View>
         {!item.isRead && (
-          <View className="w-2.5 h-2.5 rounded-full bg-blue-500 ml-2" />
+          <View
+            className="w-2.5 h-2.5 rounded-full ml-2"
+            style={{ backgroundColor: theme.colors.primary }}
+          />
         )}
       </Card.Content>
     </Card>

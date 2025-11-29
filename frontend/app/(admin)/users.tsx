@@ -1,11 +1,14 @@
-import { FlatList, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, ActivityIndicator } from "react-native-paper";
+import { FlatList } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { useUsers } from "../../src/hooks/useUsers";
 import { UserListItem } from "../../src/components/admin";
+import Container from "../../src/components/common/Container";
+import Loading from "../../src/components/common/Loading";
+import EmptyState from "../../src/components/common/EmptyState";
 
 export default function AllUsersScreen() {
+  const theme = useTheme();
   const { data: users, isLoading, isError, error } = useUsers();
   const router = useRouter();
 
@@ -14,28 +17,24 @@ export default function AllUsersScreen() {
   };
 
   if (isLoading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <ActivityIndicator animating={true} />
-      </SafeAreaView>
-    );
+    return <Loading size="large" />;
   }
 
   if (isError) {
     return (
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.errorText}>
+      <Container className="justify-center items-center">
+        <Text className="text-center" style={{ color: theme.colors.error }}>
           Failed to load users: {error.message}
         </Text>
-      </SafeAreaView>
+      </Container>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text variant="headlineMedium" style={styles.header}>
+    <Container className="p-2.5">
+      {/* <Text variant="headlineMedium" className="text-center my-4">
         All Users
-      </Text>
+      </Text> */}
       <FlatList
         data={users}
         keyExtractor={(item) => item.id}
@@ -49,28 +48,9 @@ export default function AllUsersScreen() {
           />
         )}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>No users found.</Text>
+          <EmptyState icon="account-group-outline" message="No users found." />
         }
       />
-    </SafeAreaView>
+    </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  header: {
-    textAlign: "center",
-    marginVertical: 15,
-  },
-  errorText: {
-    textAlign: "center",
-    marginTop: 20,
-  },
-  emptyText: {
-    textAlign: "center",
-    marginTop: 50,
-  },
-});

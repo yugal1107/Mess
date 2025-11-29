@@ -1,6 +1,5 @@
-import { Redirect, SplashScreen } from "expo-router";
+import { Redirect } from "expo-router";
 import { useAuth } from "../src/hooks/AuthContext";
-import { ActivityIndicator } from "react-native";
 import "../src/styles/globals.css";
 import Loading from "@/src/components/common/Loading";
 

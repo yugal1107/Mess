@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet } from "react-native";
+import { Pressable } from "react-native";
 import { Card, List } from "react-native-paper";
 
 interface UserListItemProps {
@@ -18,7 +18,7 @@ export default function UserListItem({
 }: UserListItemProps) {
   return (
     <Pressable onPress={() => onPress(id)}>
-      <Card style={styles.card}>
+      <Card className="mx-3 my-1.5">
         <List.Item
           title={name}
           description={`Email: ${email}\nRole: ${role}`}
@@ -29,10 +29,3 @@ export default function UserListItem({
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    marginHorizontal: 10,
-    marginVertical: 5,
-  },
-});

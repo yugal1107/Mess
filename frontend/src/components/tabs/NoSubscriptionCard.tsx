@@ -24,7 +24,9 @@ export default function NoSubscriptionCard({
 
         <RadioButton.Group
           value={subscriptionType}
-          onValueChange={(value) => setSubscriptionType(value as "MESS" | "HOME_DELIVERY")}
+          onValueChange={(value) =>
+            setSubscriptionType(value as "MESS" | "HOME_DELIVERY")
+          }
         >
           <View style={styles.radioRow}>
             <RadioButton value="MESS" />

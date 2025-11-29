@@ -1,14 +1,14 @@
 import { View } from "react-native";
 import { Link, useRouter, useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from "react";
-import { Button, TextInput, Text } from "react-native-paper";
+import { Button, TextInput, Text, useTheme } from "react-native-paper";
 import { useAuth } from "../src/hooks/AuthContext";
 import apiClient, { setClientAccessToken } from "../src/api/client";
 import { saveRefreshToken } from "../src/services/tokenStorage";
 import { getErrorMessage } from "../src/utils/errorHelper";
-import Container from "@/src/components/common/Container";
 
 export default function LoginScreen() {
+  const theme = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -86,16 +86,26 @@ export default function LoginScreen() {
   };
 
   return (
-    <Container>
-      <View className="flex-1 justify-center p-5 bg-surface">
+      <View
+        className="flex-1 justify-center p-5"
+        style={{ backgroundColor: theme.colors.surface }}
+      >
         <Text variant="displayMedium" className="mb-8">
           Welcome Back!
         </Text>
         {!!error && (
-          <Text className="text-error text-center mb-4 text-sm">{error}</Text>
+          <Text
+            className="text-center mb-4 text-sm"
+            style={{ color: theme.colors.error }}
+          >
+            {error}
+          </Text>
         )}
         {!!success && (
-          <Text className="text-green-600 text-center mb-4 text-sm">
+          <Text
+            className="text-center mb-4 text-sm"
+            style={{ color: theme.colors.primary }}
+          >
             {success}
           </Text>
         )}
@@ -107,7 +117,8 @@ export default function LoginScreen() {
           value={email}
           onChangeText={setEmail}
           disabled={loading}
-          className="mb-4 bg-surface"
+          className="mb-4"
+          style={{ backgroundColor: theme.colors.surface }}
         />
         <TextInput
           label="Password"
@@ -116,7 +127,8 @@ export default function LoginScreen() {
           value={password}
           onChangeText={setPassword}
           disabled={loading}
-          className="mb-4 bg-surface"
+          className="mb-4"
+          style={{ backgroundColor: theme.colors.surface }}
         />
         <Button
           mode="contained"
@@ -129,10 +141,9 @@ export default function LoginScreen() {
         </Button>
         <Link href="/signup" asChild>
           <Button mode="text" disabled={loading} className="mt-2">
-            Don't have an account? Sign Up
+            Don&apos;t have an account? Sign Up
           </Button>
         </Link>
       </View>
-    </Container>
   );
 }

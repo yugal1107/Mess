@@ -1,6 +1,5 @@
-import { StyleSheet, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text, ActivityIndicator, Divider } from "react-native-paper";
+import { ScrollView, View } from "react-native";
+import { Text, Divider, useTheme } from "react-native-paper";
 import { useLocalSearchParams, Stack } from "expo-router";
 import {
   useUserDetails,
@@ -11,8 +10,10 @@ import {
   UserInfoCard,
   UserSubscriptionCard,
 } from "../../../src/components/admin";
+import Loading from "../../../src/components/common/Loading";
 
 export default function UserDetailsScreen() {
+  const theme = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const {
@@ -26,18 +27,16 @@ export default function UserDetailsScreen() {
   const isLoading = isLoadingUser || isLoadingSubscription;
 
   if (isLoading) {
-    return (
-      <SafeAreaView style={styles.centerContainer}>
-        <ActivityIndicator animating={true} size="large" />
-      </SafeAreaView>
-    );
+    return <Loading size="large" />;
   }
 
   if (isUserError || !user) {
     return (
-      <SafeAreaView style={styles.centerContainer}>
-        <Text style={styles.errorText}>Failed to load user details</Text>
-      </SafeAreaView>
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-center" style={{ color: theme.colors.error }}>
+          Failed to load user details
+        </Text>
+      </View>
     );
   }
 
@@ -49,10 +48,10 @@ export default function UserDetailsScreen() {
           headerShown: true,
         }}
       />
-      <ScrollView style={styles.container}>
+      <ScrollView className="flex-1">
         <ProfileHeader name={user.name} email={user.email} role={user.role} />
 
-        <Divider style={styles.divider} />
+        <Divider className="mx-5" />
 
         <UserInfoCard id={user.id} email={user.email} role={user.role} />
 
@@ -61,21 +60,3 @@ export default function UserDetailsScreen() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  divider: {
-    marginHorizontal: 20,
-  },
-  errorText: {
-    color: "red",
-    textAlign: "center",
-  },
-});

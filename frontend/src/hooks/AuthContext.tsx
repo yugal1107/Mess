@@ -4,22 +4,22 @@ import React, {
   useContext,
   ReactNode,
   useEffect,
+  useCallback,
 } from "react";
-import { setClientAccessToken } from "../api/client";
+import apiClient, { setClientAccessToken } from "../api/client";
 import {
   getRefreshToken,
   deleteRefreshToken,
   saveRefreshToken,
 } from "../services/tokenStorage";
 import { UserDto, LoginResponseDto, ApiResponse } from "../types/dto";
-import apiClient from "../api/client";
 
 interface AuthContextType {
   token: string | null;
   user: UserDto | null;
   setUser: (user: UserDto | null) => void;
   setToken: (token: string | null) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -35,17 +35,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoading, setIsLoading] = useState(true); // New loading state
 
   // Function to set token in state and in Axios client
-  const setToken = (newToken: string | null) => {
+  const setToken = useCallback((newToken: string | null) => {
     setTokenState(newToken);
     setClientAccessToken(newToken);
-  };
+  }, []);
 
-  // Logout function
-  const logout = async () => {
+  // Logout function - memoized to prevent useEffect dependency issues
+  const logout = useCallback(async () => {
     setUser(null);
     setToken(null);
     await deleteRefreshToken();
-  };
+  }, [setToken]);
 
   // Run checkAuthStatus on component mount with cleanup to prevent memory leaks
   useEffect(() => {
@@ -75,11 +75,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           if (!mounted) return;
           setUser(profileResponse.data.data);
         }
-      } catch (error) {
-        console.error(
-          "Failed to refresh token or fetch profile on startup:",
-          error
-        );
+      } catch {
+        // Failed to refresh token or fetch profile on startup
         if (mounted) {
           logout(); // Clear any stale tokens
         }
@@ -95,7 +92,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [logout, setToken]);
 
   const value = {
     token,

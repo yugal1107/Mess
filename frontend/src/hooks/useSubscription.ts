@@ -1,17 +1,19 @@
 // src/hooks/useSubscription.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import { isAxiosError } from "axios";
 import apiClient from "../api/client";
 import { SubscriptionDto, UserDto } from "../types/dto";
 
 // --- API Functions ---
 const fetchSubscriptionDetails = async (): Promise<SubscriptionDto | null> => {
+
+
   try {
     const response = await apiClient.get("/subscription");
     return response.data.data;
   } catch (error) {
     // It's common for a user to not have a subscription, so we handle this gracefully
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
+    if (isAxiosError(error) && error.response?.status === 404) {
       return null;
     }
     throw error; // Re-throw other errors
