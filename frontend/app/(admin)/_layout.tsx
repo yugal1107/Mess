@@ -12,12 +12,10 @@ export default function AdminLayout() {
     return <Loading size="large" />;
   }
 
-  // Redirect to login if not authenticated
   if (!user) {
     return <Redirect href="/login" />;
   }
 
-  // Redirect non-admins to student dashboard
   if (user.role !== "ADMIN") {
     return <Redirect href="/(tabs)/dashboard" />;
   }

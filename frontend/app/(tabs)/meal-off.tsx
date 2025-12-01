@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Text, Snackbar } from "react-native-paper";
+import { useState } from "react";
+import { Snackbar } from "react-native-paper";
 import { AxiosError, AxiosResponse } from "axios";
 import { ApiResponse, TodayMealOffDto } from "../../src/types/dto";
 import {
@@ -7,6 +7,7 @@ import {
   useCustomMealOff,
   useToggleMeal,
   useSetCustomMealOff,
+  useCancelCustomMealOff,
 } from "../../src/hooks/useMealOff";
 import { getErrorMessage } from "../../src/utils/errorHelper";
 import {
@@ -16,60 +17,53 @@ import {
 import Loading from "@/src/components/common/Loading";
 import Container from "@/src/components/common/Container";
 import EmptyState from "@/src/components/common/EmptyState";
+import ErrorScreen from "@/src/components/common/ErrorScreen";
 
 export default function MealOffScreen() {
   // --- UI State ---
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  // --- Form Input State ---
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [startMeal, setStartMeal] = useState<"LUNCH" | "DINNER">("LUNCH");
-  const [endMeal, setEndMeal] = useState<"LUNCH" | "DINNER">("DINNER");
-
   // --- Custom Hooks for Data Fetching & Mutations ---
   const {
     data: todayMealOff,
     isLoading: isLoadingToday,
     error: todayError,
+    refetch: refetchToday,
   } = useTodayMealOff();
   const {
     data: customMealOff,
     isLoading: isLoadingCustom,
     error: customError,
+    refetch: refetchCustom,
   } = useCustomMealOff();
   const { mutate: toggleMeal, isPending: isToggling } = useToggleMeal();
   const { mutate: setCustomMealOff, isPending: isSettingCustom } =
     useSetCustomMealOff();
+  const { mutate: cancelCustomMealOff, isPending: isCancellingCustom } =
+    useCancelCustomMealOff();
 
   const isLoading = isLoadingToday || isLoadingCustom;
-
-  // --- Sync local form state with server data ---
-  useEffect(() => {
-    if (customMealOff?.startDate) {
-      setStartDate(new Date(customMealOff.startDate));
-      setEndDate(new Date(customMealOff.endDate));
-      setStartMeal(customMealOff.startMeal);
-      setEndMeal(customMealOff.endMeal);
-    }
-  }, [customMealOff]);
 
   const showSnackbar = (message: string) => {
     setSnackbarMessage(message);
     setSnackbarVisible(true);
   };
 
+  const handleRetry = () => {
+    refetchToday();
+    refetchCustom();
+  };
+
   // Handle 400 Error (Not Subscribed)
   const error = todayError || customError;
   if (error) {
-    const status = (error as AxiosError)?.response?.status;
+    const axiosError = error as AxiosError;
+    const status = axiosError?.response?.status;
+
     if (status === 400) {
       return (
         <Container className="p-5">
-          {/* <Text variant="headlineMedium" className="text-center mb-5">
-            Meal Off Management
-          </Text> */}
           <EmptyState
             icon="account-off-outline"
             message="You do not have an active subscription. Please subscribe to manage meal offs."
@@ -77,9 +71,17 @@ export default function MealOffScreen() {
         </Container>
       );
     }
+
+    // Handle other API errors
+    return (
+      <ErrorScreen
+        message={getErrorMessage(error, "Failed to load meal off data")}
+        onRetry={handleRetry}
+      />
+    );
   }
 
-  const handleToggle = (meal: "lunch" | "dinner", newValue: boolean) => {
+  const handleToggle = (meal: "lunch" | "dinner") => {
     const currentlyOff =
       meal === "lunch" ? todayMealOff?.lunch : todayMealOff?.dinner;
 
@@ -88,31 +90,43 @@ export default function MealOffScreen() {
       {
         onSuccess: (response: AxiosResponse<ApiResponse<TodayMealOffDto>>) =>
           showSnackbar(response.data.data.message || "Meal updated!"),
-        onError: (error: Error) =>
-          showSnackbar(getErrorMessage(error, "An error occurred")),
+        onError: (err: Error) =>
+          showSnackbar(getErrorMessage(err, "Failed to update meal")),
       }
     );
   };
 
-  const handleCustomSubmit = () => {
-    if (startDate > endDate) {
+  const handleCustomSubmit = (data: {
+    startDate: Date;
+    endDate: Date;
+    startMeal: "LUNCH" | "DINNER";
+    endMeal: "LUNCH" | "DINNER";
+  }) => {
+    if (data.startDate > data.endDate) {
       showSnackbar("Start date must be before or equal to end date.");
       return;
     }
     setCustomMealOff(
       {
-        startDate: startDate.toLocaleDateString("en-CA"),
-        endDate: endDate.toLocaleDateString("en-CA"),
-        startMeal,
-        endMeal,
+        startDate: data.startDate.toLocaleDateString("en-CA"),
+        endDate: data.endDate.toLocaleDateString("en-CA"),
+        startMeal: data.startMeal,
+        endMeal: data.endMeal,
       },
       {
-        onSuccess: () =>
-          showSnackbar("Custom meal off range set successfully!"),
-        onError: (error: Error) =>
-          showSnackbar(getErrorMessage(error, "Failed to set custom range")),
+        onSuccess: () => showSnackbar("Custom meal off set successfully!"),
+        onError: (err: Error) =>
+          showSnackbar(getErrorMessage(err, "Failed to set custom meal off")),
       }
     );
+  };
+
+  const handleCancelCustom = () => {
+    cancelCustomMealOff(undefined, {
+      onSuccess: () => showSnackbar("Custom meal off cancelled"),
+      onError: (err: Error) =>
+        showSnackbar(getErrorMessage(err, "Failed to cancel custom meal off")),
+    });
   };
 
   if (isLoading) {
@@ -121,9 +135,6 @@ export default function MealOffScreen() {
 
   return (
     <Container className="px-5">
-      {/* <Text variant="headlineMedium" className="text-center mb-5">
-        Meal Off Management
-      </Text> */}
       <TodayMealCard
         lunchOff={todayMealOff?.lunch || false}
         dinnerOff={todayMealOff?.dinner || false}
@@ -132,16 +143,11 @@ export default function MealOffScreen() {
       />
 
       <CustomRangeMealCard
-        startDate={startDate}
-        endDate={endDate}
-        startMeal={startMeal}
-        endMeal={endMeal}
+        currentMealOff={customMealOff || null}
         isLoading={isSettingCustom}
-        onStartDateChange={setStartDate}
-        onEndDateChange={setEndDate}
-        onStartMealChange={setStartMeal}
-        onEndMealChange={setEndMeal}
+        isCancelling={isCancellingCustom}
         onSubmit={handleCustomSubmit}
+        onCancel={handleCancelCustom}
       />
 
       <Snackbar

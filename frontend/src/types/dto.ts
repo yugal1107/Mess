@@ -62,11 +62,11 @@ export interface TodayMealOffDto {
 }
 
 export interface CustomMealOffDto {
-  id: string;
-  startMeal: "LUNCH" | "DINNER";
-  endMeal: "LUNCH" | "DINNER";
-  startDate: string; // LocalDate from backend, will be string in TS (YYYY-MM-DD)
-  endDate: string; // LocalDate from backend, will be string in TS (YYYY-MM-DD)
+  id: string | null;
+  startMeal: "LUNCH" | "DINNER" | null;
+  endMeal: "LUNCH" | "DINNER" | null;
+  startDate: string | null; // LocalDate from backend, will be string in TS (YYYY-MM-DD)
+  endDate: string | null; // LocalDate from backend, will be string in TS (YYYY-MM-DD)
   message?: string;
 }
 

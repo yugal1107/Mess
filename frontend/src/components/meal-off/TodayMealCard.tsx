@@ -5,7 +5,7 @@ interface TodayMealCardProps {
   lunchOff: boolean;
   dinnerOff: boolean;
   isToggling: boolean;
-  onToggle: (meal: "lunch" | "dinner", newValue: boolean) => void;
+  onToggle: (meal: "lunch" | "dinner") => void;
 }
 
 export default function TodayMealCard({
@@ -18,7 +18,7 @@ export default function TodayMealCard({
 
   return (
     <Card className="mb-5">
-      <Card.Title title="Today&apos;s Meal Off" titleVariant="headlineSmall" />
+      <Card.Title title="Today's Meal Off" titleVariant="headlineSmall" />
       <Card.Content>
         <Text
           variant="bodySmall"
@@ -32,7 +32,7 @@ export default function TodayMealCard({
           <Switch
             disabled={isToggling}
             value={lunchOff}
-            onValueChange={(val) => onToggle("lunch", val)}
+            onValueChange={() => onToggle("lunch")}
           />
         </View>
         <View className="flex-row justify-between items-center py-2.5">
@@ -40,7 +40,7 @@ export default function TodayMealCard({
           <Switch
             disabled={isToggling}
             value={dinnerOff}
-            onValueChange={(val) => onToggle("dinner", val)}
+            onValueChange={() => onToggle("dinner")}
           />
         </View>
       </Card.Content>

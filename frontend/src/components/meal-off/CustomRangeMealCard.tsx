@@ -1,130 +1,89 @@
 import { useState } from "react";
-import { StyleSheet } from "react-native";
-import { Card, Button, SegmentedButtons, Text } from "react-native-paper";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import ActiveMealOffCard from "./ActiveMealOffCard";
+import EmptyMealOffCard from "./EmptyMealOffCard";
+import MealOffForm, { MealOffFormData } from "./MealOffForm";
 
 type MealType = "LUNCH" | "DINNER";
 
+interface CustomMealOffData {
+  startDate: string | null;
+  endDate: string | null;
+  startMeal: MealType | null;
+  endMeal: MealType | null;
+}
+
 interface CustomRangeMealCardProps {
-  startDate: Date;
-  endDate: Date;
-  startMeal: MealType;
-  endMeal: MealType;
+  currentMealOff: CustomMealOffData | null;
   isLoading: boolean;
-  onStartDateChange: (date: Date) => void;
-  onEndDateChange: (date: Date) => void;
-  onStartMealChange: (meal: MealType) => void;
-  onEndMealChange: (meal: MealType) => void;
-  onSubmit: () => void;
+  isCancelling: boolean;
+  onSubmit: (data: MealOffFormData) => void;
+  onCancel: () => void;
 }
 
 export default function CustomRangeMealCard({
-  startDate,
-  endDate,
-  startMeal,
-  endMeal,
+  currentMealOff,
   isLoading,
-  onStartDateChange,
-  onEndDateChange,
-  onStartMealChange,
-  onEndMealChange,
+  isCancelling,
   onSubmit,
+  onCancel,
 }: CustomRangeMealCardProps) {
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
+  const hasActiveMealOff = currentMealOff?.startDate && currentMealOff?.endDate;
+
+  const handleStartEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
+  const handleSubmit = (data: MealOffFormData) => {
+    onSubmit(data);
+    setIsEditing(false);
+  };
+
+  // Get initial form data from current meal off
+  const getInitialFormData = (): MealOffFormData | undefined => {
+    if (!hasActiveMealOff) return undefined;
+    return {
+      startDate: new Date(currentMealOff.startDate!),
+      endDate: new Date(currentMealOff.endDate!),
+      startMeal: currentMealOff.startMeal || "LUNCH",
+      endMeal: currentMealOff.endMeal || "DINNER",
+    };
+  };
+
+  // Show active meal-off details
+  if (hasActiveMealOff && !isEditing) {
+    return (
+      <ActiveMealOffCard
+        startDate={currentMealOff.startDate!}
+        endDate={currentMealOff.endDate!}
+        startMeal={currentMealOff.startMeal}
+        endMeal={currentMealOff.endMeal}
+        isCancelling={isCancelling}
+        onEdit={handleStartEdit}
+        onCancel={onCancel}
+      />
+    );
+  }
+
+  // Show empty state
+  if (!isEditing) {
+    return <EmptyMealOffCard onSetMealOff={handleStartEdit} />;
+  }
+
+  // Show edit/create form
   return (
-    <Card style={styles.card}>
-      <Card.Title title="Custom Meal Off" titleVariant="headlineSmall" />
-      <Card.Content>
-        <Text variant="bodyMedium" className="mb-4">
-          Set a custom range for meal off
-        </Text>
-        <Text variant="bodySmall" className="mb-2">
-          Select the start and end dates along with the meal type for each.
-        </Text>
-        <Text variant="bodySmall" className="mb-4">
-          <Text className="font-bold">Note</Text>
-          : Start date must be before or equal to end date.
-        </Text>
-        <Button
-          onPress={() => setShowStartDatePicker(true)}
-          mode="outlined"
-          style={styles.dateButton}
-        >
-          Start Date: {startDate.toLocaleDateString()}
-        </Button>
-        {showStartDatePicker && (
-          <DateTimePicker
-            value={startDate}
-            mode="date"
-            display="default"
-            onChange={(e, d) => {
-              setShowStartDatePicker(false);
-              if (d) onStartDateChange(d);
-            }}
-          />
-        )}
-        <SegmentedButtons
-          value={startMeal}
-          onValueChange={(value) => onStartMealChange(value as MealType)}
-          buttons={[
-            { value: "LUNCH", label: "Lunch" },
-            { value: "DINNER", label: "Dinner" },
-          ]}
-          style={styles.segmentedButtons}
-        />
-        <Button
-          onPress={() => setShowEndDatePicker(true)}
-          mode="outlined"
-          style={styles.dateButton}
-        >
-          End Date: {endDate.toLocaleDateString()}
-        </Button>
-        {showEndDatePicker && (
-          <DateTimePicker
-            value={endDate}
-            mode="date"
-            display="default"
-            onChange={(e, d) => {
-              setShowEndDatePicker(false);
-              if (d) onEndDateChange(d);
-            }}
-          />
-        )}
-        <SegmentedButtons
-          value={endMeal}
-          onValueChange={(value) => onEndMealChange(value as MealType)}
-          buttons={[
-            { value: "LUNCH", label: "Lunch" },
-            { value: "DINNER", label: "Dinner" },
-          ]}
-          style={styles.segmentedButtons}
-        />
-        <Button
-          mode="contained"
-          style={styles.submitButton}
-          onPress={onSubmit}
-          loading={isLoading}
-        >
-          Submit Custom Off
-        </Button>
-      </Card.Content>
-    </Card>
+    <MealOffForm
+      title={hasActiveMealOff ? "Edit Meal Off" : "Set Custom Meal Off"}
+      initialData={getInitialFormData()}
+      isLoading={isLoading}
+      submitLabel={hasActiveMealOff ? "Update" : "Submit"}
+      onSubmit={handleSubmit}
+      onCancel={handleCancelEdit}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    marginBottom: 20,
-  },
-  dateButton: {
-    marginBottom: 10,
-  },
-  segmentedButtons: {
-    marginBottom: 20,
-  },
-  submitButton: {
-    marginTop: 10,
-  },
-});

@@ -50,6 +50,10 @@ const setCustomMealOff = (data: {
   return apiClient.post("/mealoff", data);
 };
 
+const cancelCustomMealOff = () => {
+  return apiClient.delete("/mealoff");
+};
+
 // --- Custom Hooks ---
 export const useTodayMealOff = () => {
   return useQuery({
@@ -80,6 +84,17 @@ export const useSetCustomMealOff = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: setCustomMealOff,
+    onSuccess: () => {
+      // Invalidate the custom meal off query to refetch the status
+      queryClient.invalidateQueries({ queryKey: ["customMealOff"] });
+    },
+  });
+};
+
+export const useCancelCustomMealOff = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: cancelCustomMealOff,
     onSuccess: () => {
       // Invalidate the custom meal off query to refetch the status
       queryClient.invalidateQueries({ queryKey: ["customMealOff"] });

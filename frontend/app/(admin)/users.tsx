@@ -37,6 +37,7 @@ export default function AllUsersScreen() {
       </Text> */}
       <FlatList
         data={users}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <UserListItem
