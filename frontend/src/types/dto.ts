@@ -44,6 +44,14 @@ export interface UserDto {
   // Add other user-related fields if they exist in backend UserDto
 }
 
+export interface UserListDto {
+  userList: UserDto[];
+  count: number;
+}
+
+// Filter type for subscription status
+export type SubscriptionStatus = "ACTIVE" | "INACTIVE" | "REQUESTED";
+
 // --- Subscription DTOs ---
 export interface SubscriptionDto {
   id: string;

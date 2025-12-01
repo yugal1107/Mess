@@ -2,12 +2,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import apiClient from "../api/client";
-import { SubscriptionDto, UserDto } from "../types/dto";
+import { SubscriptionDto } from "../types/dto";
 
 // --- API Functions ---
 const fetchSubscriptionDetails = async (): Promise<SubscriptionDto | null> => {
-
-
   try {
     const response = await apiClient.get("/subscription");
     return response.data.data;
@@ -22,11 +20,6 @@ const fetchSubscriptionDetails = async (): Promise<SubscriptionDto | null> => {
 
 const requestNewSubscription = (type: string) => {
   return apiClient.post(`/subscription/request-new-subscription/${type}`);
-};
-
-const fetchSubscriptionRequests = async (): Promise<UserDto[]> => {
-  const response = await apiClient.get("/subscription/requests");
-  return response.data.data;
 };
 
 const acceptSubscriptionRequest = (userId: string) => {
@@ -53,21 +46,15 @@ export const useRequestSubscription = () => {
   });
 };
 
-export const useSubscriptionRequests = () => {
-  return useQuery({
-    queryKey: ["subscriptionRequests"],
-    queryFn: fetchSubscriptionRequests,
-  });
-};
-
 export const useAcceptSubscription = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: acceptSubscriptionRequest,
-        onSuccess: () => {
-            // After accepting a request, invalidate the list of requests
-            // so the approved user is removed from the list.
-            queryClient.invalidateQueries({ queryKey: ['subscriptionRequests'] });
-        }
-    });
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: acceptSubscriptionRequest,
+    onSuccess: () => {
+      // After accepting a request, invalidate users list with REQUESTED filter
+      // so the approved user is removed from the list.
+      queryClient.invalidateQueries({ queryKey: ["users", "REQUESTED"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
 };

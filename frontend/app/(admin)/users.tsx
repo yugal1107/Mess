@@ -1,19 +1,39 @@
-import { FlatList } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { useState } from "react";
+import { View, FlatList } from "react-native";
+import { Text, Chip, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { useUsers } from "../../src/hooks/useUsers";
+import { SubscriptionStatus } from "../../src/types/dto";
 import { UserListItem } from "../../src/components/admin";
 import Container from "../../src/components/common/Container";
 import Loading from "../../src/components/common/Loading";
 import EmptyState from "../../src/components/common/EmptyState";
+import ErrorScreen from "../../src/components/common/ErrorScreen";
+
+type FilterOption = SubscriptionStatus | "ALL";
+
+const FILTER_OPTIONS: { label: string; value: FilterOption }[] = [
+  { label: "All", value: "ALL" },
+  { label: "Active", value: "ACTIVE" },
+  { label: "Requested", value: "REQUESTED" },
+  { label: "Inactive", value: "INACTIVE" },
+];
 
 export default function AllUsersScreen() {
   const theme = useTheme();
-  const { data: users, isLoading, isError, error } = useUsers();
   const router = useRouter();
+  const [selectedFilter, setSelectedFilter] = useState<FilterOption>("ALL");
+
+  // Pass undefined for "ALL" to get all users, otherwise pass the status
+  const statusFilter = selectedFilter === "ALL" ? undefined : selectedFilter;
+  const { data, isLoading, isError, error, refetch } = useUsers(statusFilter);
 
   const handleUserPress = (userId: string) => {
     router.push(`/(admin)/user/${userId}`);
+  };
+
+  const handleFilterPress = (filter: FilterOption) => {
+    setSelectedFilter(filter);
   };
 
   if (isLoading) {
@@ -22,21 +42,48 @@ export default function AllUsersScreen() {
 
   if (isError) {
     return (
-      <Container className="justify-center items-center">
-        <Text className="text-center" style={{ color: theme.colors.error }}>
-          Failed to load users: {error.message}
-        </Text>
-      </Container>
+      <ErrorScreen
+        message={error?.message || "Failed to load users"}
+        onRetry={refetch}
+      />
     );
   }
 
   return (
     <Container className="p-2.5">
-      {/* <Text variant="headlineMedium" className="text-center my-4">
-        All Users
-      </Text> */}
+      {/* Filter Chips */}
+      <View className="flex-row flex-wrap gap-2 mb-4 px-1">
+        {FILTER_OPTIONS.map((option) => (
+          <Chip
+            key={option.value}
+            selected={selectedFilter === option.value}
+            onPress={() => handleFilterPress(option.value)}
+            showSelectedOverlay
+            mode="outlined"
+            style={{
+              backgroundColor:
+                selectedFilter === option.value
+                  ? theme.colors.primaryContainer
+                  : theme.colors.surface,
+            }}
+          >
+            {option.label}
+          </Chip>
+        ))}
+      </View>
+
+      {/* User Count */}
+      <Text
+        variant="bodySmall"
+        className="px-1 mb-2"
+        style={{ color: theme.colors.outline }}
+      >
+        {data?.count ?? 0} user{data?.count !== 1 ? "s" : ""} found
+      </Text>
+
+      {/* User List */}
       <FlatList
-        data={users}
+        data={data?.userList}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -49,7 +96,14 @@ export default function AllUsersScreen() {
           />
         )}
         ListEmptyComponent={
-          <EmptyState icon="account-group-outline" message="No users found." />
+          <EmptyState
+            icon="account-group-outline"
+            message={
+              selectedFilter === "ALL"
+                ? "No users found."
+                : `No ${selectedFilter.toLowerCase()} users found.`
+            }
+          />
         }
       />
     </Container>

@@ -18,7 +18,8 @@ import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
 
 // Create a client with sensible defaults for mobile
-const queryClient = new QueryClient({
+// Export queryClient so it can be accessed for cache clearing on logout
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 5, // 5 minutes

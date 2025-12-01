@@ -1,23 +1,18 @@
 import { FlatList } from "react-native";
 import { Text, useTheme } from "react-native-paper";
-import {
-  useSubscriptionRequests,
-  useAcceptSubscription,
-} from "../../src/hooks/useSubscription";
+import { useSubscriptionRequests } from "../../src/hooks/useUsers";
+import { useAcceptSubscription } from "../../src/hooks/useSubscription";
 import { useState } from "react";
 import { RequestCard } from "../../src/components/admin";
 import Container from "../../src/components/common/Container";
 import Loading from "../../src/components/common/Loading";
 import EmptyState from "../../src/components/common/EmptyState";
+import ErrorScreen from "../../src/components/common/ErrorScreen";
 
 export default function SubscriptionRequestsScreen() {
   const theme = useTheme();
-  const {
-    data: requests,
-    isLoading,
-    isError,
-    error,
-  } = useSubscriptionRequests();
+  const { data, isLoading, isError, error, refetch } =
+    useSubscriptionRequests();
 
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
 
@@ -38,21 +33,17 @@ export default function SubscriptionRequestsScreen() {
 
   if (isError) {
     return (
-      <Container className="justify-center items-center">
-        <Text className="text-center" style={{ color: theme.colors.error }}>
-          Failed to load requests: {error.message}
-        </Text>
-      </Container>
+      <ErrorScreen
+        message={error?.message || "Failed to load requests"}
+        onRetry={refetch}
+      />
     );
   }
 
   return (
     <Container className="p-2.5">
-      {/* <Text variant="headlineMedium" className="text-center my-4">
-        Subscription Requests
-      </Text> */}
       <FlatList
-        data={requests}
+        data={data?.userList}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <RequestCard

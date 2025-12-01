@@ -1,11 +1,22 @@
 // src/hooks/useUsers.ts
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "../api/client";
-import { UserDto, SubscriptionDto } from "../types/dto";
+import {
+  UserDto,
+  UserListDto,
+  SubscriptionDto,
+  SubscriptionStatus,
+} from "../types/dto";
 
 // --- API Functions ---
-const fetchAllUsers = async (): Promise<UserDto[]> => {
-  const response = await apiClient.get("/user/all");
+
+// Fetch all users with optional subscription status filter
+const fetchAllUsers = async (
+  status?: SubscriptionStatus
+): Promise<UserListDto> => {
+  const params = status ? { status } : {};
+  const response = await apiClient.get("/user/all", { params });
+  console.log("Fetched users:", response.data);
   return response.data.data;
 };
 
@@ -30,11 +41,23 @@ const fetchUserSubscription = async (
 };
 
 // --- Custom Hooks ---
-export const useUsers = () => {
+
+/**
+ * Fetch all users with optional subscription status filter
+ * @param status - Optional filter: "ACTIVE" | "INACTIVE" | "REQUESTED"
+ */
+export const useUsers = (status?: SubscriptionStatus) => {
   return useQuery({
-    queryKey: ["users"],
-    queryFn: fetchAllUsers,
+    queryKey: ["users", status],
+    queryFn: () => fetchAllUsers(status),
   });
+};
+
+/**
+ * Fetch users with REQUESTED subscription status (for admin approval)
+ */
+export const useSubscriptionRequests = () => {
+  return useUsers("REQUESTED");
 };
 
 export const useUserDetails = (userId: string) => {

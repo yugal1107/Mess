@@ -13,6 +13,7 @@ import {
   saveRefreshToken,
 } from "../services/tokenStorage";
 import { UserDto, LoginResponseDto, ApiResponse } from "../types/dto";
+import { queryClient } from "../../app/_layout";
 
 interface AuthContextType {
   token: string | null;
@@ -45,6 +46,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(null);
     setToken(null);
     await deleteRefreshToken();
+    // Clear all cached queries to prevent stale data from previous user
+    queryClient.clear();
   }, [setToken]);
 
   // Run checkAuthStatus on component mount with cleanup to prevent memory leaks
