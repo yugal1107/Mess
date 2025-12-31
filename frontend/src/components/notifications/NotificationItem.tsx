@@ -22,12 +22,12 @@ const formatTimestamp = (timestamp: string): string => {
 // Get icon based on notification type
 const getNotificationIcon = (
   type: NotificationDto["type"]
-): { name: "alert-circle" | "food" | "bell" ; color: string } => {
+): { name: "alert-circle" | "food" | "bell"; color: string } => {
   switch (type) {
     case "SUBSCRIPTION_EXPIRY":
       return { name: "alert-circle", color: "#ed1010ff" };
     case "MEAL_UPDATE":
-      return { name: "food", color: "#f26900ff" };
+      return { name: "bell", color: "#f26900ff" };
     case "GENERAL":
     default:
       return { name: "bell", color: "#9b59b6" };

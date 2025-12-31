@@ -12,10 +12,12 @@ export default function AdminLayout() {
     return <Loading size="large" />;
   }
 
+  // Redirect to login if not authenticated
   if (!user) {
     return <Redirect href="/login" />;
   }
 
+  // Redirect non-admins to student dashboard
   if (user.role !== "ADMIN") {
     return <Redirect href="/(tabs)/dashboard" />;
   }
@@ -48,6 +50,20 @@ export default function AdminLayout() {
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="clipboard-list-outline"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="meal-offs"
+        options={{
+          title: "Meal-Offs",
+          headerShown: true,
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="food-off"
               color={color}
               size={size}
             />

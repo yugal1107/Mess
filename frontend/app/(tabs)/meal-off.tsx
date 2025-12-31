@@ -134,7 +134,7 @@ export default function MealOffScreen() {
   }
 
   return (
-    <Container className="px-5">
+    <Container className="px-2.5 py-5">
       <TodayMealCard
         lunchOff={todayMealOff?.lunch || false}
         dinnerOff={todayMealOff?.dinner || false}

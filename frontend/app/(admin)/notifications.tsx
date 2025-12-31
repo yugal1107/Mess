@@ -31,7 +31,7 @@ export default function NotificationsScreen() {
   }
 
   return (
-    <Container className="p-0">
+    <Container className="p-2.5">
       {/* <Text variant="headlineMedium" className="text-center my-4">
         Notifications
       </Text> */}

@@ -1,78 +1,25 @@
-// src/hooks/useMealOff.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import apiClient from "../api/client";
-import { TodayMealOffDto, CustomMealOffDto } from "../types/dto";
-
-// --- API Functions ---
-const fetchTodayMealOff = async (): Promise<TodayMealOffDto> => {
-  const response = await apiClient.get("/mealoff/today");
-  return response.data.data;
-};
-
-const fetchCustomMealOff = async (): Promise<CustomMealOffDto> => {
-  const response = await apiClient.get("/mealoff/custom");
-  return response.data.data;
-};
-
-// Set meal off (turn OFF the meal)
-const setMealOff = (meal: "lunch" | "dinner") => {
-  return apiClient.post(`/mealoff/${meal}`);
-};
-
-// Reverse meal off (turn meal back ON)
-const reverseMealOff = (meal: "lunch" | "dinner") => {
-  return apiClient.delete(`/mealoff/${meal}`);
-};
-
-// Toggle meal based on current state
-const toggleMeal = ({
-  meal,
-  currentlyOff,
-}: {
-  meal: "lunch" | "dinner";
-  currentlyOff: boolean;
-}) => {
-  if (currentlyOff) {
-    // Meal is currently off, reverse it (turn it back on)
-    return reverseMealOff(meal);
-  } else {
-    // Meal is currently on, set it off
-    return setMealOff(meal);
-  }
-};
-
-const setCustomMealOff = (data: {
-  startDate: string;
-  endDate: string;
-  startMeal: string;
-  endMeal: string;
-}) => {
-  return apiClient.post("/mealoff", data);
-};
-
-const cancelCustomMealOff = () => {
-  return apiClient.delete("/mealoff");
-};
+import * as MealOffApi from "../api/mealOffApi";
 
 // --- Custom Hooks ---
 export const useTodayMealOff = () => {
   return useQuery({
     queryKey: ["todayMealOff"],
-    queryFn: fetchTodayMealOff,
+    queryFn: MealOffApi.fetchTodayMealOff,
   });
 };
 
 export const useCustomMealOff = () => {
   return useQuery({
     queryKey: ["customMealOff"],
-    queryFn: fetchCustomMealOff,
+    queryFn: MealOffApi.fetchCustomMealOff,
   });
 };
 
 export const useToggleMeal = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: toggleMeal,
+    mutationFn: MealOffApi.toggleMeal,
     onSuccess: () => {
       // Invalidate today's meal off query to refetch the status
       queryClient.invalidateQueries({ queryKey: ["todayMealOff"] });
@@ -83,7 +30,7 @@ export const useToggleMeal = () => {
 export const useSetCustomMealOff = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: setCustomMealOff,
+    mutationFn: MealOffApi.setCustomMealOff,
     onSuccess: () => {
       // Invalidate the custom meal off query to refetch the status
       queryClient.invalidateQueries({ queryKey: ["customMealOff"] });
@@ -94,10 +41,55 @@ export const useSetCustomMealOff = () => {
 export const useCancelCustomMealOff = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: cancelCustomMealOff,
+    mutationFn: MealOffApi.cancelCustomMealOff,
     onSuccess: () => {
       // Invalidate the custom meal off query to refetch the status
       queryClient.invalidateQueries({ queryKey: ["customMealOff"] });
+    },
+  });
+};
+
+// --- Admin Hooks ---
+
+export const useAllLunchOffs = () => {
+  return useQuery({
+    queryKey: ["allLunchOffs"],
+    queryFn: MealOffApi.fetchAllLunchOffs,
+  });
+};
+
+export const useAllDinnerOffs = () => {
+  return useQuery({
+    queryKey: ["allDinnerOffs"],
+    queryFn: MealOffApi.fetchAllDinnerOffs,
+  });
+};
+
+export const useAllCustomOffs = () => {
+  return useQuery({
+    queryKey: ["allCustomOffs"],
+    queryFn: MealOffApi.fetchAllCustomOffs,
+  });
+};
+
+export const useCustomOffDetailsByUserId = (userId: string) => {
+  return useQuery({
+    queryKey: ["customOffDetails", userId],
+    queryFn: () => MealOffApi.fetchCustomOffDetailsByUserId(userId),
+    enabled: !!userId,
+  });
+};
+
+export const useCancelCustomOffByUserId = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: MealOffApi.cancelCustomOffByUserId,
+    onSuccess: (_, userId) => {
+      // Invalidate the specific user's custom off details and the list of all custom offs
+      queryClient.invalidateQueries({
+        queryKey: ["customOffDetails", userId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["allCustomOffs"] });
     },
   });
 };

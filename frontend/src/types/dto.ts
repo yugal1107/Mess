@@ -78,6 +78,11 @@ export interface CustomMealOffDto {
   message?: string;
 }
 
+export interface CustomOffDetailDto {
+  customMealOff: CustomMealOffDto;
+  user: UserDto;
+}
+
 // --- Notification DTOs ---
 export interface NotificationDto {
   type: "SUBSCRIPTION_EXPIRY" | "MEAL_UPDATE" | "GENERAL";

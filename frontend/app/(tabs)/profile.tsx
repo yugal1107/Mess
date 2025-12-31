@@ -14,7 +14,7 @@ export default function ProfileScreen() {
   };
 
   if (!user) {
-    return null; // Or a loading indicator
+    return null; 
   }
 
   return (

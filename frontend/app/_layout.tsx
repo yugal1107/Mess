@@ -11,24 +11,12 @@ import {
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
 import { useEffect } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import * as SplashScreen from "expo-splash-screen";
+import { queryClient } from "../src/config/queryClient";
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
-
-// Create a client with sensible defaults for mobile
-// Export queryClient so it can be accessed for cache clearing on logout
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      retry: 2,
-      refetchOnWindowFocus: false, // Not relevant for mobile
-      refetchOnReconnect: true,
-    },
-  },
-});
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({

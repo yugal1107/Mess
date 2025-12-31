@@ -13,7 +13,7 @@ import {
   saveRefreshToken,
 } from "../services/tokenStorage";
 import { UserDto, LoginResponseDto, ApiResponse } from "../types/dto";
-import { queryClient } from "../../app/_layout";
+import { queryClient } from "../config/queryClient";
 
 interface AuthContextType {
   token: string | null;
