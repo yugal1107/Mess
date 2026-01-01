@@ -1,5 +1,5 @@
-import { ScrollView } from "react-native";
-import { Text } from "react-native-paper";
+import { ScrollView, View } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 import { useState } from "react";
 import { useAuth } from "@/src/hooks/AuthContext";
 import {
@@ -11,8 +11,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import SubscriptionCard from "@/src/components/tabs/SubscriptionCard";
 import PendingRequestCard from "@/src/components/tabs/PendingRequestCard";
 import NoSubscriptionCard from "@/src/components/tabs/NoSubscriptionCard";
-import LogoutButton from "@/src/components/tabs/LogoutButton";
 import Loading from "@/src/components/common/Loading";
+import MealMenu from "@/src/components/tabs/MealMenu";
 
 export default function DashboardScreen() {
   const { user } = useAuth();
@@ -21,6 +21,7 @@ export default function DashboardScreen() {
   >("MESS");
   const { data: subscription, isLoading } = useSubscription();
   const { mutate: requestSubscription, isPending } = useRequestSubscription();
+  const theme = useTheme();
 
   if (!user || isLoading) {
     return <Loading size="large" />;
@@ -28,9 +29,16 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView className="flex-1 justify-center items-center">
-      <ScrollView className="flex-1 w-full px-5 py-6">
-        <Text variant="headlineMedium" className="mb-10 text-start w-full">
-          Welcome, {user.name}!
+      <ScrollView className="flex-1 w-full px-5">
+        <Text variant="headlineMedium" className="text-start w-full">
+          Welcome,
+        </Text>
+        <Text
+          variant="titleMedium"
+          className="mb-10 text-5xl font-black w-full"
+          style={{ color: theme.colors.primary }}
+        >
+          {user.name}
         </Text>
 
         {subscription?.status === "ACTIVE" && (
@@ -50,7 +58,10 @@ export default function DashboardScreen() {
           />
         )}
 
-        <LogoutButton />
+        <View className="flex-row gap-4 mb-5">
+          <MealMenu />
+          <MealMenu />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
