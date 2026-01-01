@@ -31,7 +31,7 @@ export default function NotificationsScreen() {
   }
 
   return (
-    <Container className="p-2.5">
+    <Container className="">
       {/* <Text variant="headlineMedium" className="text-center my-4">
         Notifications
       </Text> */}
@@ -39,7 +39,6 @@ export default function NotificationsScreen() {
         data={notifications}
         keyExtractor={(item, index) => `${item.timestamp}-${index}`}
         renderItem={({ item }) => <NotificationItem item={item} />}
-        contentContainerClassName="px-2.5 pb-5"
         ListEmptyComponent={
           <EmptyState icon="bell-off-outline" message="No notifications yet" />
         }

@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Text, Card, useTheme } from "react-native-paper";
+import { Text, Card, useTheme, Divider } from "react-native-paper";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { NotificationDto } from "../../types/dto";
 
@@ -43,37 +43,47 @@ export default function NotificationItem({ item }: NotificationItemProps) {
   const icon = getNotificationIcon(item.type);
 
   return (
-    <Card
-      className="my-1 mx-1"
-      style={
-        !item.isRead ? { backgroundColor: theme.colors.primaryContainer } : {}
-      }
-    >
-      <Card.Content className="flex-row items-center">
-        <View
-          className="w-10 h-10 rounded-full justify-center items-center mr-3"
-          style={{ backgroundColor: icon.color }}
-        >
-          <MaterialCommunityIcons name={icon.name} size={20} color="#fff" />
-        </View>
-        <View className="flex-1">
-          <Text
-            variant="bodyMedium"
-            className={`mb-1 ${!item.isRead ? "font-bold" : ""}`}
-          >
-            {item.message}
-          </Text>
-          <Text variant="bodySmall" style={{ color: theme.colors.outline }}>
-            {formatTimestamp(item.timestamp)}
-          </Text>
-        </View>
-        {!item.isRead && (
+    <View>
+      <Card
+        mode="contained"
+        className="rounded-none border-none"
+        style={
+          !item.isRead
+            ? { backgroundColor: theme.colors.primaryContainer }
+            : { backgroundColor: theme.colors.surface }
+        }
+      >
+        <Card.Content className="flex-row items-center">
           <View
-            className="w-2.5 h-2.5 rounded-full ml-2"
+            className="w-10 h-10 rounded-full justify-center items-center mr-3"
             style={{ backgroundColor: theme.colors.primary }}
-          />
-        )}
-      </Card.Content>
-    </Card>
+          >
+            <MaterialCommunityIcons
+              name={icon.name}
+              size={20}
+              color={theme.colors.onPrimary}
+            />
+          </View>
+          <View className="flex-1">
+            <Text
+              variant="bodyMedium"
+              className={`mb-1 ${!item.isRead ? "font-bold" : ""}`}
+            >
+              {item.message}
+            </Text>
+            <Text variant="bodySmall" style={{ color: theme.colors.outline }}>
+              {formatTimestamp(item.timestamp)}
+            </Text>
+          </View>
+          {!item.isRead && (
+            <View
+              className="w-2.5 h-2.5 rounded-full ml-2"
+              style={{ backgroundColor: theme.colors.primary }}
+            />
+          )}
+        </Card.Content>
+      </Card>
+      <Divider />
+    </View>
   );
 }
