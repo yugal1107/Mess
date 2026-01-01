@@ -1,5 +1,4 @@
 import { FlatList } from "react-native";
-import { Text, useTheme } from "react-native-paper";
 import { useSubscriptionRequests } from "../../src/hooks/useUsers";
 import { useAcceptSubscription } from "../../src/hooks/useSubscription";
 import { useState } from "react";
@@ -10,7 +9,6 @@ import EmptyState from "../../src/components/common/EmptyState";
 import ErrorScreen from "../../src/components/common/ErrorScreen";
 
 export default function SubscriptionRequestsScreen() {
-  const theme = useTheme();
   const { data, isLoading, isError, error, refetch } =
     useSubscriptionRequests();
 

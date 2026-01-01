@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { Card, Button, Text, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import DateMealPicker from "./DateMealPicker";
 
 type MealType = "LUNCH" | "DINNER";
@@ -48,11 +49,49 @@ export default function MealOffForm({
   };
 
   return (
-    <Card className="mb-5">
-      <Card.Title title={title} titleVariant="headlineSmall" />
-      <Card.Content>
+    <View
+      className="mb-5 rounded-3xl overflow-hidden"
+      style={{
+        backgroundColor: theme.colors.elevation.level1,
+        elevation: 2,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 1.41,
+      }}
+    >
+      {/* Header Section */}
+      <View
+        className="p-4 flex-row items-center gap-3"
+        style={{ backgroundColor: theme.colors.primaryContainer }}
+      >
+        <View className="p-2 rounded-full bg-white/30">
+          <MaterialCommunityIcons
+            name="calendar-edit"
+            size={35}
+            color={theme.colors.onPrimaryContainer}
+          />
+        </View>
+        <View>
+          <Text
+            variant="titleMedium"
+            className="font-semibold text-2xl"
+            style={{ color: theme.colors.onPrimaryContainer }}
+          >
+            {title}
+          </Text>
+          <Text
+            variant="labelMedium"
+            style={{ color: theme.colors.onPrimaryContainer, opacity: 0.8 }}
+          >
+            Select Dates & Meals
+          </Text>
+        </View>
+      </View>
+
+      <View className="p-5">
         <Text
-          variant="bodySmall"
+          variant="bodyMedium"
           className="mb-4"
           style={{ color: theme.colors.outline }}
         >
@@ -77,7 +116,7 @@ export default function MealOffForm({
           onMealChange={setEndMeal}
         />
 
-        <View className="flex-row gap-2">
+        <View className="flex-row gap-2 mt-2">
           <Button mode="outlined" onPress={onCancel} className="flex-1">
             Cancel
           </Button>
@@ -91,7 +130,7 @@ export default function MealOffForm({
             {submitLabel}
           </Button>
         </View>
-      </Card.Content>
-    </Card>
+      </View>
+    </View>
   );
 }

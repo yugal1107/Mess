@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Card, Button, Text, useTheme, Divider } from "react-native-paper";
+import { Button, Text, useTheme, Divider } from "react-native-paper";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { formatDate } from "../../utils/formatters";
 
@@ -27,21 +27,47 @@ export default function ActiveMealOffCard({
   const theme = useTheme();
 
   return (
-    <Card className="mb-5 rounded-xl" mode="elevated">
-      <Card.Content>
-        <View className="flex-row justify-between items-center mb-4">
-          <Text variant="titleMedium" className="font-bold">
-            Active Meal Off
-          </Text>
+    <View
+      className="mb-5 rounded-3xl overflow-hidden"
+      style={{
+        backgroundColor: theme.colors.elevation.level1,
+        elevation: 2,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 1.41,
+      }}
+    >
+      {/* Header Section */}
+      <View
+        className="p-4 flex-row items-center gap-3"
+        style={{ backgroundColor: theme.colors.primaryContainer }}
+      >
+        <View className="p-2 rounded-full bg-white/30">
           <MaterialCommunityIcons
             name="calendar-check"
-            size={24}
-            color={theme.colors.primary}
+            size={35}
+            color={theme.colors.onPrimaryContainer}
           />
         </View>
+        <View>
+          <Text
+            variant="titleMedium"
+            className="font-semibold text-2xl"
+            style={{ color: theme.colors.onPrimaryContainer }}
+          >
+            Active Meal Off
+          </Text>
+          <Text
+            variant="labelMedium"
+            style={{ color: theme.colors.onPrimaryContainer, opacity: 0.8 }}
+          >
+            Scheduled
+          </Text>
+        </View>
+      </View>
 
-        <Divider className="mb-4" />
-
+      <View className="p-5">
         {/* Date & Meal Info */}
         <View className="flex-row justify-between items-center mb-4">
           {/* Start Section */}
@@ -59,7 +85,7 @@ export default function ActiveMealOffCard({
                 FROM
               </Text>
             </View>
-            <Text variant="bodyLarge" className="font-semibold">
+            <Text variant="bodyLarge" className="font-bold">
               {formatDate(startDate)}
             </Text>
             <Text
@@ -100,7 +126,7 @@ export default function ActiveMealOffCard({
                 color={theme.colors.error}
               />
             </View>
-            <Text variant="bodyLarge" className="font-semibold text-right">
+            <Text variant="bodyLarge" className="font-bold text-right">
               {formatDate(endDate)}
             </Text>
             <Text
@@ -112,28 +138,29 @@ export default function ActiveMealOffCard({
             </Text>
           </View>
         </View>
-      </Card.Content>
 
-      <Card.Actions className="pt-0 border-t border-gray-100 dark:border-gray-800 mt-2">
-        <Button
-          mode="text"
-          onPress={onEdit}
-          icon="pencil"
-          textColor={theme.colors.primary}
-        >
-          Edit
-        </Button>
-        <Button
-          mode="text"
-          onPress={onCancel}
-          loading={isCancelling}
-          disabled={isCancelling}
-          icon="close-circle-outline"
-          textColor={theme.colors.error}
-        >
-          Cancel
-        </Button>
-      </Card.Actions>
-    </Card>
+        <Divider className="mb-2" />
+
+        <View className="flex-row justify-end pt-2 gap-2">
+          <Button
+            mode="contained"
+            onPress={onEdit}
+            icon="pencil"
+          >
+            Edit
+          </Button>
+          <Button
+            mode="contained"
+            onPress={onCancel}
+            loading={isCancelling}
+            disabled={isCancelling}
+            icon="close-circle-outline"
+            theme={{ colors: { primary: theme.colors.error } }}
+          >
+            Cancel
+          </Button>
+        </View>
+      </View>
+    </View>
   );
 }

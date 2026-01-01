@@ -15,8 +15,16 @@ export default function NoSubscriptionCard({
   loading,
 }: NoSubscriptionCardProps) {
   return (
-    <Card style={{ marginBottom: 20 }}>
-      <Card.Title title="No Active Subscription" />
+    <Card style={{ marginBottom: 20, paddingVertical: 10 }}>
+      <Card.Title
+        title="You do not have an Active Subscription"
+        titleVariant="titleLarge"
+        titleStyle={{
+          paddingBottom: 10,
+          fontWeight: "bold",
+          padding: 0
+        }}
+      />
       <Card.Content>
         <Text variant="titleMedium" style={{ marginBottom: 10 }}>
           Choose a subscription type:
