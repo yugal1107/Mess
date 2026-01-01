@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { SegmentedButtons, useTheme } from "react-native-paper";
+import { View } from "react-native";
+import { SegmentedButtons } from "react-native-paper";
 import LunchOffList from "../../src/components/admin/meals/LunchOffList";
 import DinnerOffList from "../../src/components/admin/meals/DinnerOffList";
 import CustomOffList from "../../src/components/admin/meals/CustomOffList";
@@ -8,7 +8,6 @@ import Container from "../../src/components/common/Container";
 
 export default function MealOffsScreen() {
   const [value, setValue] = useState("lunch");
-  const theme = useTheme();
 
   const renderContent = () => {
     switch (value) {

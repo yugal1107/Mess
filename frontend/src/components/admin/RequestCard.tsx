@@ -1,7 +1,5 @@
-import { Card, List, Button, Avatar } from "react-native-paper";
+import { Card, List, Button, Avatar, useTheme } from "react-native-paper";
 import { getInitials } from "../../utils/formatters";
-import { useTheme } from "react-native-paper";
-import { use } from "react";
 
 interface RequestCardProps {
   id: string;

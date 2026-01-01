@@ -1,7 +1,6 @@
 import { Pressable } from "react-native";
-import { Card, List, Avatar } from "react-native-paper";
+import { Card, List, Avatar, useTheme } from "react-native-paper";
 import { getInitials } from "../../utils/formatters";
-import { useTheme } from "react-native-paper";
 
 interface UserListItemProps {
   id: string;
