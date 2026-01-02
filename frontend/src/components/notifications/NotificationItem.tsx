@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Text, Card, useTheme, Divider } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { NotificationDto } from "../../types/dto";
 
@@ -36,54 +36,69 @@ const getNotificationIcon = (
 
 interface NotificationItemProps {
   item: NotificationDto;
+  isFirst?: boolean;
+  isLast?: boolean;
 }
 
-export default function NotificationItem({ item }: NotificationItemProps) {
+export default function NotificationItem({
+  item,
+  isFirst,
+  isLast,
+}: NotificationItemProps) {
   const theme = useTheme();
   const icon = getNotificationIcon(item.type);
 
+  const largeRadius = 20;
+  const smallRadius = 7;
+
   return (
-    <View>
-      <Card
-        mode="contained"
-        className="rounded-none border-none"
-        style={
-          !item.isRead
-            ? { backgroundColor: theme.colors.primaryContainer }
-            : { backgroundColor: theme.colors.surface }
-        }
+    <View
+      style={{
+        backgroundColor: !item.isRead
+          ? theme.colors.primaryContainer
+          : theme.colors.surface,
+        borderTopLeftRadius: isFirst ? largeRadius : smallRadius,
+        borderTopRightRadius: isFirst ? largeRadius : smallRadius,
+        borderBottomLeftRadius: isLast ? largeRadius : smallRadius,
+        borderBottomRightRadius: isLast ? largeRadius : smallRadius,
+        marginBottom: 3,
+        padding: 16,
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+    >
+      <View
+        className="w-10 h-10 rounded-full justify-center items-center mr-3"
+        style={{ backgroundColor: theme.colors.primary }}
       >
-        <Card.Content className="flex-row items-center">
-          <View
-            className="w-10 h-10 rounded-full justify-center items-center mr-3"
-            style={{ backgroundColor: theme.colors.primary }}
-          >
-            <MaterialCommunityIcons
-              name={icon.name}
-              size={20}
-              color={theme.colors.onPrimary}
-            />
-          </View>
-          <View className="flex-1">
-            <Text
-              variant="bodyMedium"
-              className={`mb-1 ${!item.isRead ? "font-bold" : ""}`}
-            >
-              {item.message}
-            </Text>
-            <Text variant="bodySmall" style={{ color: theme.colors.outline }}>
-              {formatTimestamp(item.timestamp)}
-            </Text>
-          </View>
-          {!item.isRead && (
-            <View
-              className="w-2.5 h-2.5 rounded-full ml-2"
-              style={{ backgroundColor: theme.colors.primary }}
-            />
-          )}
-        </Card.Content>
-      </Card>
-      <Divider />
+        <MaterialCommunityIcons
+          name={icon.name}
+          size={20}
+          color={theme.colors.onPrimary}
+        />
+      </View>
+      <View className="flex-1">
+        <Text
+          variant="bodyMedium"
+          className={`mb-1 ${!item.isRead ? "font-bold" : ""}`}
+          style={{
+            color: !item.isRead
+              ? theme.colors.onPrimaryContainer
+              : theme.colors.onSurface,
+          }}
+        >
+          {item.message}
+        </Text>
+        <Text variant="bodySmall" style={{ color: theme.colors.outline }}>
+          {formatTimestamp(item.timestamp)}
+        </Text>
+      </View>
+      {!item.isRead && (
+        <View
+          className="w-2.5 h-2.5 rounded-full ml-2"
+          style={{ backgroundColor: theme.colors.primary }}
+        />
+      )}
     </View>
   );
 }

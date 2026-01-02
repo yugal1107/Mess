@@ -85,11 +85,11 @@ export default function TodayMealCard({
             >
               <MaterialCommunityIcons
                 name="weather-sunny"
-                size={20}
+                size={25}
                 color={theme.colors.primary}
               />
             </View>
-            <Text variant="bodyLarge" className="font-medium">
+            <Text variant="bodyLarge" className="font-semibold">
               Lunch
             </Text>
           </View>
@@ -115,11 +115,11 @@ export default function TodayMealCard({
             >
               <MaterialCommunityIcons
                 name="weather-night"
-                size={20}
+                size={25}
                 color={theme.colors.primary}
               />
             </View>
-            <Text variant="bodyLarge" className="font-medium">
+            <Text variant="bodyLarge" className="font-semibold">
               Dinner
             </Text>
           </View>

@@ -22,7 +22,7 @@ export default function NotificationsScreen() {
 
   if (isError) {
     return (
-      <Container className="justify-center items-center">
+      <Container className="justify-center items-center" edges={["top"]}>
         <Text className="text-center" style={{ color: theme.colors.error }}>
           Failed to load notifications: {error?.message}
         </Text>
@@ -31,14 +31,20 @@ export default function NotificationsScreen() {
   }
 
   return (
-    <Container className="">
-      {/* <Text variant="headlineMedium" className="text-center my-4">
+    <Container className="px-2.5 pt-5" edges={["top"]}>
+      <Text variant="headlineLarge" className="my-4 mx-5">
         Notifications
-      </Text> */}
+      </Text>
       <FlatList
         data={notifications}
         keyExtractor={(item, index) => `${item.timestamp}-${index}`}
-        renderItem={({ item }) => <NotificationItem item={item} />}
+        renderItem={({ item, index }) => (
+          <NotificationItem
+            item={item}
+            isFirst={index === 0}
+            isLast={index === (notifications?.length ?? 0) - 1}
+          />
+        )}
         ListEmptyComponent={
           <EmptyState icon="bell-off-outline" message="No notifications yet" />
         }

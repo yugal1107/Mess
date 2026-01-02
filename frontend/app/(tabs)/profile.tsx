@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { Text, Button, Avatar, Card, useTheme } from "react-native-paper";
 import { useAuth } from "../../src/hooks/AuthContext";
 import { useRouter } from "expo-router";
+import Container from "@/src/components/common/Container";
 
 export default function ProfileScreen() {
   const theme = useTheme();
@@ -18,6 +19,7 @@ export default function ProfileScreen() {
   }
 
   return (
+    <Container edges={["top"]} className="py-10">
     <View className="flex-1 items-center pt-10 px-5">
       <Avatar.Text
         size={80}
@@ -51,5 +53,6 @@ export default function ProfileScreen() {
         Logout
       </Button>
     </View>
+    </Container>
   );
 }

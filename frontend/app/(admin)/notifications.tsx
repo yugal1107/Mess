@@ -38,7 +38,13 @@ export default function NotificationsScreen() {
       <FlatList
         data={notifications}
         keyExtractor={(item, index) => `${item.timestamp}-${index}`}
-        renderItem={({ item }) => <NotificationItem item={item} />}
+        renderItem={({ item, index }) => (
+          <NotificationItem
+            item={item}
+            isFirst={index === 0}
+            isLast={index === (notifications?.length ?? 0) - 1}
+          />
+        )}
         ListEmptyComponent={
           <EmptyState icon="bell-off-outline" message="No notifications yet" />
         }

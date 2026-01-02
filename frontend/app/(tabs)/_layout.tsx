@@ -33,6 +33,7 @@ export default function TabsLayout() {
         name="dashboard"
         options={{
           title: "Dashboard",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="view-dashboard"
@@ -45,6 +46,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="meal-off"
         options={{
+          headerShown: false,
           title: "Meal Off",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="food-off" color={color} size={size} />
@@ -54,6 +56,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="notifications"
         options={{
+          headerShown: false,
           title: "Notifications",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="bell" color={color} size={size} />
@@ -64,6 +67,7 @@ export default function TabsLayout() {
         name="profile"
         options={{
           title: "Profile",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-circle"

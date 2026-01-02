@@ -6,13 +6,13 @@ import {
   useSubscription,
   useRequestSubscription,
 } from "@/src/hooks/useSubscription";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import SubscriptionCard from "@/src/components/tabs/SubscriptionCard";
 import PendingRequestCard from "@/src/components/tabs/PendingRequestCard";
 import NoSubscriptionCard from "@/src/components/tabs/NoSubscriptionCard";
 import Loading from "@/src/components/common/Loading";
 import MealMenu from "@/src/components/tabs/MealMenu";
+import Container from "@/src/components/common/Container";
 
 export default function DashboardScreen() {
   const { user } = useAuth();
@@ -28,41 +28,47 @@ export default function DashboardScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 justify-center items-center">
-      <ScrollView className="flex-1 w-full px-5">
-        <Text variant="headlineMedium" className="text-start w-full">
-          Welcome,
-        </Text>
-        <Text
-          variant="titleMedium"
-          className="mb-10 text-5xl font-black w-full"
-          style={{ color: theme.colors.primary }}
-        >
-          {user.name}
-        </Text>
+    <Container className="justify-center items-center py-10" edges={["top"]}>
+      {/* <SafeAreaView className="flex-1 justify-center items-center"> */}
+        <ScrollView className="flex-1 w-full px-5">
+          <Text variant="headlineMedium" className="text-start w-full text-4xl">
+            Welcome,
+          </Text>
+          <Text
+            variant="titleMedium"
+            className="mb-10 text-5xl font-black w-full"
+            style={{ color: theme.colors.primary }}
+          >
+            {user.name}
+          </Text>
 
-        {subscription?.status === "ACTIVE" && (
-          <SubscriptionCard subscription={subscription} />
-        )}
+          <Text variant="headlineMedium" className="text-start w-full text-2xl mb-5">
+            Your Subscription Details:
+          </Text>
 
-        {subscription?.status === "REQUESTED" && (
-          <PendingRequestCard subscription={subscription} />
-        )}
+          {subscription?.status === "ACTIVE" && (
+            <SubscriptionCard subscription={subscription} />
+          )}
 
-        {subscription?.status === "INACTIVE" && (
-          <NoSubscriptionCard
-            subscriptionType={subscriptionType}
-            setSubscriptionType={setSubscriptionType}
-            requestSubscription={requestSubscription}
-            loading={isPending}
-          />
-        )}
+          {subscription?.status === "REQUESTED" && (
+            <PendingRequestCard subscription={subscription} />
+          )}
 
-        <View className="flex-row gap-4 mb-5">
-          <MealMenu />
-          <MealMenu />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          {subscription?.status === "INACTIVE" && (
+            <NoSubscriptionCard
+              subscriptionType={subscriptionType}
+              setSubscriptionType={setSubscriptionType}
+              requestSubscription={requestSubscription}
+              loading={isPending}
+            />
+          )}
+
+          <View className="flex-row gap-4 mb-5">
+            <MealMenu />
+            <MealMenu />
+          </View>
+        </ScrollView>
+      {/* </SafeAreaView> */}
+    </Container>
   );
 }
