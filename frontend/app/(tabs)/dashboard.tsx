@@ -31,7 +31,7 @@ export default function DashboardScreen() {
   }
 
   return (
-    <Container className="px-2.5 pt-5" edges={["top"]} heading="Dashboard">
+    <Container className="px-2.5 pt-5" edges={["top"]}>
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
