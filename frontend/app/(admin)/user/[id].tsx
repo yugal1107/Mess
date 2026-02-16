@@ -1,5 +1,4 @@
-import { ScrollView, View } from "react-native";
-import { Divider } from "react-native-paper";
+import { ScrollView } from "react-native";
 import { useLocalSearchParams, Stack } from "expo-router";
 import {
   useUserDetails,
@@ -52,7 +51,11 @@ export default function UserDetailsScreen() {
   }
 
   return (
-    <Container edges={["top", "bottom"]}>
+    <Container
+      className="px-2.5 pt-5"
+      edges={["top", "bottom"]}
+      heading="User Details"
+    >
       <Stack.Screen
         options={{
           headerShown: false,
@@ -61,13 +64,9 @@ export default function UserDetailsScreen() {
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <ProfileHeader name={user.name} email={user.email} role={user.role} />
 
-        <Divider className="mx-6" />
+        <UserInfoCard id={user.id} email={user.email} role={user.role} />
 
-        <View className="py-4">
-          <UserInfoCard id={user.id} email={user.email} role={user.role} />
-
-          <UserSubscriptionCard subscription={subscription} />
-        </View>
+        <UserSubscriptionCard subscription={subscription} />
       </ScrollView>
     </Container>
   );

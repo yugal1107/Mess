@@ -1,4 +1,4 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, Dimensions } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { useState } from "react";
 import { useAuth } from "@/src/hooks/AuthContext";
@@ -14,6 +14,9 @@ import Loading from "@/src/components/common/Loading";
 import MealMenu from "@/src/components/tabs/MealMenu";
 import Container from "@/src/components/common/Container";
 
+const { width } = Dimensions.get("window");
+const isSmallDevice = width < 375;
+
 export default function DashboardScreen() {
   const { user } = useAuth();
   const [subscriptionType, setSubscriptionType] = useState<
@@ -28,22 +31,45 @@ export default function DashboardScreen() {
   }
 
   return (
-    <Container className="justify-center items-center py-10" edges={["top"]}>
-      {/* <SafeAreaView className="flex-1 justify-center items-center"> */}
-        <ScrollView className="flex-1 w-full px-5">
-          <Text variant="headlineMedium" className="text-start w-full text-4xl">
+    <Container className="px-2.5 pt-5" edges={["top"]} heading="Dashboard">
+      <ScrollView
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 16 }}
+      >
+        {/* Welcome Section */}
+        <View style={{ marginBottom: isSmallDevice ? 16 : 24 }}>
+          <Text
+            variant="headlineSmall"
+            style={{
+              color: theme.colors.onSurfaceVariant,
+              marginBottom: 4,
+            }}
+          >
             Welcome,
           </Text>
           <Text
-            variant="titleMedium"
-            className="mb-10 text-5xl font-black w-full"
-            style={{ color: theme.colors.primary }}
+            variant="headlineLarge"
+            style={{
+              color: theme.colors.primary,
+              fontWeight: "700",
+            }}
           >
             {user.name}
           </Text>
+        </View>
 
-          <Text variant="headlineMedium" className="text-start w-full text-2xl mb-5">
-            Your Subscription Details:
+        {/* Subscription Section */}
+        <View style={{ marginBottom: isSmallDevice ? 12 : 16 }}>
+          <Text
+            variant="titleLarge"
+            style={{
+              color: theme.colors.onSurface,
+              fontWeight: "600",
+              marginBottom: isSmallDevice ? 12 : 16,
+            }}
+          >
+            Subscription Details
           </Text>
 
           {subscription?.status === "ACTIVE" && (
@@ -62,13 +88,31 @@ export default function DashboardScreen() {
               loading={isPending}
             />
           )}
+        </View>
 
-          <View className="flex-row gap-4 mb-5">
+        {/* Menu Section */}
+        <View style={{ marginBottom: 20 }}>
+          <Text
+            variant="titleLarge"
+            style={{
+              color: theme.colors.onSurface,
+              fontWeight: "600",
+              marginBottom: isSmallDevice ? 12 : 16,
+            }}
+          >
+            Quick Access
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: isSmallDevice ? 12 : 16,
+            }}
+          >
             <MealMenu />
-            <MealMenu />
+            {/* <MealMenu /> */}
           </View>
-        </ScrollView>
-      {/* </SafeAreaView> */}
+        </View>
+      </ScrollView>
     </Container>
   );
 }

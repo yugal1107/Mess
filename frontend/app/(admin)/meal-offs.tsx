@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { SegmentedButtons, Text } from "react-native-paper";
+import { SegmentedButtons } from "react-native-paper";
 import LunchOffList from "../../src/components/admin/meals/LunchOffList";
 import DinnerOffList from "../../src/components/admin/meals/DinnerOffList";
 import CustomOffList from "../../src/components/admin/meals/CustomOffList";
@@ -23,10 +23,7 @@ export default function MealOffsScreen() {
   };
 
   return (
-    <Container className="px-2.5 pt-5" edges={["top"]}>
-      <Text variant="headlineLarge" className="my-4 mx-5">
-        Meal Offs
-      </Text>
+    <Container className="px-2.5 pt-5" edges={["top"]} heading="Meal Offs">
       <SegmentedButtons
         value={value}
         onValueChange={setValue}

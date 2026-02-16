@@ -23,7 +23,7 @@ export default function UserListItem({
 }: UserListItemProps) {
   const theme = useTheme();
 
-  const largeRadius = 20;
+  const largeRadius = 16;
   const smallRadius = 4;
 
   return (
@@ -34,18 +34,26 @@ export default function UserListItem({
         borderTopRightRadius: isFirst ? largeRadius : smallRadius,
         borderBottomLeftRadius: isLast ? largeRadius : smallRadius,
         borderBottomRightRadius: isLast ? largeRadius : smallRadius,
-        marginBottom: 4,
+        marginBottom: isLast ? 0 : 2,
         overflow: "hidden",
+        elevation: 0.5,
       }}
     >
       <List.Item
         title={name}
-        titleStyle={{ fontWeight: "bold" }}
-        style={{ paddingHorizontal: 5, paddingVertical: 8,}}
+        titleStyle={{
+          fontWeight: "600",
+          fontSize: 16,
+          color: theme.colors.onSurface,
+        }}
+        style={{
+          paddingHorizontal: 16,
+          paddingVertical: 12,
+        }}
         description={() => (
-          <View className="mt-0.5 flex-row items-center">
+          <View className="mt-1 flex-row items-center flex-wrap">
             <Text
-              variant="bodySmall"
+              variant="bodyMedium"
               style={{ color: theme.colors.onSurfaceVariant }}
               numberOfLines={1}
             >
@@ -55,9 +63,9 @@ export default function UserListItem({
               <View
                 style={{
                   backgroundColor: theme.colors.tertiaryContainer,
-                  paddingHorizontal: 6,
-                  paddingVertical: 2,
-                  borderRadius: 4,
+                  paddingHorizontal: 8,
+                  paddingVertical: 3,
+                  borderRadius: 6,
                   marginLeft: 8,
                 }}
               >
@@ -65,7 +73,8 @@ export default function UserListItem({
                   style={{
                     color: theme.colors.onTertiaryContainer,
                     fontSize: 10,
-                    fontWeight: "bold",
+                    fontWeight: "700",
+                    letterSpacing: 0.5,
                   }}
                 >
                   ADMIN
@@ -77,20 +86,36 @@ export default function UserListItem({
         left={(props) => (
           <Avatar.Text
             {...props}
-            size={40}
+            size={44}
             label={getInitials(name)}
             style={[
               props.style,
               {
                 backgroundColor: theme.colors.primaryContainer,
-                marginRight: 10,
+                marginRight: 12,
               },
             ]}
             color={theme.colors.onPrimaryContainer}
           />
         )}
         right={(props) => (
-          <List.Icon {...props} icon="chevron-right" color={theme.colors.outline} />
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              backgroundColor: theme.colors.surfaceVariant,
+            }}
+          >
+            <List.Icon
+              {...props}
+              icon="chevron-right"
+              color={theme.colors.onSurfaceVariant}
+              style={{ margin: 0 }}
+            />
+          </View>
         )}
         onPress={() => onPress(id)}
       />

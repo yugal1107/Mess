@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Text, Card, Chip, useTheme } from "react-native-paper";
+import { Text, Card, useTheme } from "react-native-paper";
 import { formatDate } from "../../utils/formatters";
 
 interface SubscriptionData {
@@ -13,23 +13,23 @@ interface UserSubscriptionCardProps {
   subscription: SubscriptionData | null | undefined;
 }
 
-const getStatusTheme = (status: string | undefined) => {
+const getStatusTheme = (status: string | undefined, theme: any) => {
   switch (status) {
     case "ACTIVE":
       return {
-        bg: "#E8F5E9",
-        text: "#2E7D32",
+        bg: theme.colors.primaryContainer,
+        text: theme.colors.onPrimaryContainer,
       };
     case "REQUESTED":
       return {
-        bg: "#FFF3E0",
-        text: "#EF6C00",
+        bg: theme.colors.secondaryContainer,
+        text: theme.colors.onSecondaryContainer,
       };
     case "INACTIVE":
     default:
       return {
-        bg: "#FFEBEE",
-        text: "#C62828",
+        bg: theme.colors.errorContainer,
+        text: theme.colors.onErrorContainer,
       };
   }
 };
@@ -38,74 +38,129 @@ export default function UserSubscriptionCard({
   subscription,
 }: UserSubscriptionCardProps) {
   const theme = useTheme();
-  const statusTheme = getStatusTheme(subscription?.status);
+  const statusTheme = getStatusTheme(subscription?.status, theme);
 
   return (
-    <Card className="mx-4 my-2.5 mb-8" mode="elevated">
-      <Card.Title title="Subscription Details" titleVariant="titleLarge" />
-      <Card.Content>
-        {subscription ? (
-          <>
-            <View className="flex-row justify-between items-center py-3">
-              <Text variant="titleMedium" style={{ color: theme.colors.onSurfaceVariant }}>
-                Status
-              </Text>
-              <Chip
-                compact
+    <View style={{ marginHorizontal: 4, marginVertical: 4, marginBottom: 16 }}>
+      <Card mode="elevated">
+        <Card.Title title="Subscription Details" titleVariant="titleMedium" />
+        <Card.Content style={{ paddingTop: 0 }}>
+          {subscription ? (
+            <>
+              <View
                 style={{
-                  backgroundColor: statusTheme.bg,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingVertical: 8,
                 }}
-                textStyle={{ color: statusTheme.text, fontWeight: "bold" }}
               >
-                {subscription.status}
-              </Chip>
-            </View>
-            <View className="flex-row justify-between items-center py-3">
-              <Text variant="titleMedium" style={{ color: theme.colors.onSurfaceVariant }}>
-                Type
-              </Text>
-              <Text variant="bodyLarge" className="font-medium">
-                {subscription.type === "MESS" ? "Mess" : "Home Delivery"}
-              </Text>
-            </View>
-            <View className="flex-row justify-between items-center py-3">
-              <Text variant="titleMedium" style={{ color: theme.colors.onSurfaceVariant }}>
-                Meals Remaining
-              </Text>
-              <Text
-                variant="headlineSmall"
-                className="font-bold"
-                style={{ color: theme.colors.primary }}
-              >
-                {subscription.meals}
-              </Text>
-            </View>
-            {subscription.date && (
-              <View className="flex-row justify-between items-center py-3">
                 <Text
-                  variant="titleMedium"
+                  variant="bodyMedium"
                   style={{ color: theme.colors.onSurfaceVariant }}
                 >
-                  Started On
+                  Status
                 </Text>
-                <Text variant="bodyLarge" className="font-medium">
-                  {formatDate(subscription.date)}
+                <View
+                  style={{
+                    backgroundColor: statusTheme.bg,
+                    paddingHorizontal: 10,
+                    paddingVertical: 4,
+                    borderRadius: 8,
+                  }}
+                >
+                  <Text
+                    variant="bodySmall"
+                    style={{
+                      color: statusTheme.text,
+                      fontWeight: "700",
+                    }}
+                  >
+                    {subscription.status}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingVertical: 8,
+                }}
+              >
+                <Text
+                  variant="bodyMedium"
+                  style={{ color: theme.colors.onSurfaceVariant }}
+                >
+                  Type
+                </Text>
+                <Text
+                  variant="bodyMedium"
+                  style={{ fontWeight: "500", color: theme.colors.onSurface }}
+                >
+                  {subscription.type === "MESS" ? "Mess" : "Home Delivery"}
                 </Text>
               </View>
-            )}
-          </>
-        ) : (
-          <View className="items-center py-6">
-            <Text
-              variant="titleMedium"
-              style={{ color: theme.colors.outline }}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingVertical: 8,
+                }}
+              >
+                <Text
+                  variant="bodyMedium"
+                  style={{ color: theme.colors.onSurfaceVariant }}
+                >
+                  Meals Remaining
+                </Text>
+                <Text
+                  variant="titleMedium"
+                  style={{ fontWeight: "700", color: theme.colors.primary }}
+                >
+                  {subscription.meals}
+                </Text>
+              </View>
+              {subscription.date && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingVertical: 8,
+                  }}
+                >
+                  <Text
+                    variant="bodyMedium"
+                    style={{ color: theme.colors.onSurfaceVariant }}
+                  >
+                    Started On
+                  </Text>
+                  <Text
+                    variant="bodyMedium"
+                    style={{ fontWeight: "500", color: theme.colors.onSurface }}
+                  >
+                    {formatDate(subscription.date)}
+                  </Text>
+                </View>
+              )}
+            </>
+          ) : (
+            <View
+              style={{ alignItems: "center", paddingVertical: 16 }}
             >
-              No active subscription
-            </Text>
-          </View>
-        )}
-      </Card.Content>
-    </Card>
+              <Text
+                variant="bodyMedium"
+                style={{ color: theme.colors.outline }}
+              >
+                No active subscription
+              </Text>
+            </View>
+          )}
+        </Card.Content>
+      </Card>
+    </View>
   );
 }
 

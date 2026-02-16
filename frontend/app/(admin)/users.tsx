@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View, FlatList } from "react-native";
-import { Text, Chip, useTheme } from "react-native-paper";
+import { Text, Chip, useTheme, Badge } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { useUsers } from "../../src/hooks/useUsers";
 import { SubscriptionStatus } from "../../src/types/dto";
@@ -12,8 +12,13 @@ import ErrorScreen from "../../src/components/common/ErrorScreen";
 
 type FilterOption = SubscriptionStatus | "ALL";
 
-const FILTER_OPTIONS: { label: string; value: FilterOption }[] = [
-  { label: "All", value: "ALL" },
+interface FilterConfig {
+  label: string;
+  value: FilterOption;
+}
+
+const FILTER_CONFIG: FilterConfig[] = [
+  { label: "All Users", value: "ALL" },
   { label: "Active", value: "ACTIVE" },
   { label: "Requested", value: "REQUESTED" },
   { label: "Inactive", value: "INACTIVE" },
@@ -24,7 +29,6 @@ export default function AllUsersScreen() {
   const router = useRouter();
   const [selectedFilter, setSelectedFilter] = useState<FilterOption>("ALL");
 
-  // Pass undefined for "ALL" to get all users, otherwise pass the status
   const statusFilter = selectedFilter === "ALL" ? undefined : selectedFilter;
   const { data, isLoading, isError, error, refetch } = useUsers(statusFilter);
 
@@ -50,13 +54,11 @@ export default function AllUsersScreen() {
   }
 
   return (
-    <Container className="px-2.5 pt-5" edges={["top"]}>
-      <Text variant="headlineLarge" className="my-4 mx-5">
-        Users
-      </Text>
-      {/* Filter Chips */}
-      <View className="flex-row flex-wrap gap-2 mb-4 px-1">
-        {FILTER_OPTIONS.map((option) => (
+    <Container className="px-2.5 pt-5" edges={["top"]} heading="Users">
+
+      {/* Filter Section */}
+      <View className="mb-4 flex-row flex-wrap gap-2 px-1">
+        {FILTER_CONFIG.map((option) => (
           <Chip
             key={option.value}
             selected={selectedFilter === option.value}
@@ -75,20 +77,31 @@ export default function AllUsersScreen() {
         ))}
       </View>
 
-      {/* User Count */}
-      <Text
-        variant="bodySmall"
-        className="px-1 mb-2"
-        style={{ color: theme.colors.outline }}
-      >
-        {data?.count ?? 0} user{data?.count !== 1 ? "s" : ""} found
-      </Text>
+      {/* User Count Badge */}
+      <View className="px-1 mb-3 flex-row items-center">
+        <Badge
+          style={{
+            backgroundColor: theme.colors.primaryContainer,
+            color: theme.colors.onPrimaryContainer,
+          }}
+        >
+          {data?.count ?? 0}
+        </Badge>
+        <Text
+          variant="bodyMedium"
+          className="ml-2"
+          style={{ color: theme.colors.onSurfaceVariant }}
+        >
+          user{data?.count !== 1 ? "s" : ""} found
+        </Text>
+      </View>
 
       {/* User List */}
       <FlatList
         data={data?.userList}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingBottom: 20 }}
         renderItem={({ item, index }) => (
           <UserListItem
             id={item.id}
@@ -101,14 +114,16 @@ export default function AllUsersScreen() {
           />
         )}
         ListEmptyComponent={
-          <EmptyState
-            icon="account-group-outline"
-            message={
-              selectedFilter === "ALL"
-                ? "No users found."
-                : `No ${selectedFilter.toLowerCase()} users found.`
-            }
-          />
+          <View className="mt-8">
+            <EmptyState
+              icon="account-group-outline"
+              message={
+                selectedFilter === "ALL"
+                  ? "No users found in the system"
+                  : `No ${selectedFilter.toLowerCase()} users found`
+              }
+            />
+          </View>
         }
       />
     </Container>

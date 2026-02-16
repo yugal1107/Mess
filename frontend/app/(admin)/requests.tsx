@@ -1,5 +1,4 @@
 import { FlatList } from "react-native";
-import { Text } from "react-native-paper";
 import { useSubscriptionRequests } from "../../src/hooks/useUsers";
 import { useAcceptSubscription } from "../../src/hooks/useSubscription";
 import { useState } from "react";
@@ -40,10 +39,7 @@ export default function SubscriptionRequestsScreen() {
   }
 
   return (
-    <Container className="px-2.5 pt-5" edges={["top"]}>
-      <Text variant="headlineLarge" className="my-4 mx-5">
-        Subscription Requests
-      </Text>
+    <Container className="px-2.5 pt-5" edges={["top"]} heading="Subscription Requests">
       <FlatList
         data={data?.userList}
         keyExtractor={(item) => item.id}

@@ -48,8 +48,8 @@ export default function NotificationItem({
   const theme = useTheme();
   const icon = getNotificationIcon(item.type);
 
-  const largeRadius = 20;
-  const smallRadius = 7;
+  const largeRadius = 16;
+  const smallRadius = 4;
 
   return (
     <View
@@ -61,7 +61,7 @@ export default function NotificationItem({
         borderTopRightRadius: isFirst ? largeRadius : smallRadius,
         borderBottomLeftRadius: isLast ? largeRadius : smallRadius,
         borderBottomRightRadius: isLast ? largeRadius : smallRadius,
-        marginBottom: 3,
+        marginBottom: 2,
         padding: 16,
         flexDirection: "row",
         alignItems: "center",

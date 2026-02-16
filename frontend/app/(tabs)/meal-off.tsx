@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Snackbar, Text } from "react-native-paper";
+import { Snackbar } from "react-native-paper";
 import { AxiosError, AxiosResponse } from "axios";
 import { ApiResponse, TodayMealOffDto } from "../../src/types/dto";
 import {
@@ -134,10 +134,7 @@ export default function MealOffScreen() {
   }
 
   return (
-    <Container className="px-2.5 py-5" edges={["top"]}>
-      <Text variant="headlineLarge" className="mt-4 mx-5 mb-6">
-        Meal Off
-      </Text>
+    <Container className="px-2.5 pt-5" edges={["top"]} heading="Meal Off">
       <TodayMealCard
         lunchOff={todayMealOff?.lunch || false}
         dinnerOff={todayMealOff?.dinner || false}
