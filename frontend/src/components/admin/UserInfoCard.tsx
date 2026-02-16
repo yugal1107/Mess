@@ -11,26 +11,26 @@ export default function UserInfoCard({ id, email, role }: UserInfoCardProps) {
   const theme = useTheme();
 
   return (
-    <Card className="mx-4 my-2.5">
-      <Card.Title title="User Information" />
+    <Card className="mx-4 my-2.5" mode="elevated">
+      <Card.Title title="User Information" titleVariant="titleLarge" />
       <Card.Content>
-        <View className="flex-row justify-between items-center py-2.5">
-          <Text className="text-sm" style={{ color: theme.colors.outline }}>
+        <View className="flex-row justify-between items-center py-3">
+          <Text variant="titleMedium" style={{ color: theme.colors.onSurfaceVariant }}>
             User ID
           </Text>
-          <Text className="text-sm font-medium">{id}</Text>
+          <Text variant="bodyLarge" className="font-medium">{id}</Text>
         </View>
-        <View className="flex-row justify-between items-center py-2.5">
-          <Text className="text-sm" style={{ color: theme.colors.outline }}>
+        <View className="flex-row justify-between items-center py-3">
+          <Text variant="titleMedium" style={{ color: theme.colors.onSurfaceVariant }}>
             Email
           </Text>
-          <Text className="text-sm font-medium">{email}</Text>
+          <Text variant="bodyLarge" className="font-medium">{email}</Text>
         </View>
-        <View className="flex-row justify-between items-center py-2.5">
-          <Text className="text-sm" style={{ color: theme.colors.outline }}>
+        <View className="flex-row justify-between items-center py-3">
+          <Text variant="titleMedium" style={{ color: theme.colors.onSurfaceVariant }}>
             Role
           </Text>
-          <Text className="text-sm font-medium">{role}</Text>
+          <Text variant="bodyLarge" className="font-medium">{role}</Text>
         </View>
       </Card.Content>
     </Card>

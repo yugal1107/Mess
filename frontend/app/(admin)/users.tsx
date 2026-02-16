@@ -50,7 +50,10 @@ export default function AllUsersScreen() {
   }
 
   return (
-    <Container className="p-2.5">
+    <Container className="px-2.5 pt-5" edges={["top"]}>
+      <Text variant="headlineLarge" className="my-4 mx-5">
+        Users
+      </Text>
       {/* Filter Chips */}
       <View className="flex-row flex-wrap gap-2 mb-4 px-1">
         {FILTER_OPTIONS.map((option) => (
@@ -86,12 +89,14 @@ export default function AllUsersScreen() {
         data={data?.userList}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
+        renderItem={({ item, index }) => (
           <UserListItem
             id={item.id}
             name={item.name}
             email={item.email}
             role={item.role}
+            isFirst={index === 0}
+            isLast={index === (data?.userList?.length ?? 0) - 1}
             onPress={handleUserPress}
           />
         )}

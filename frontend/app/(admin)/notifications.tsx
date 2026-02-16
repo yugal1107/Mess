@@ -31,10 +31,10 @@ export default function NotificationsScreen() {
   }
 
   return (
-    <Container className="">
-      {/* <Text variant="headlineMedium" className="text-center my-4">
+    <Container className="px-2.5 pt-5" edges={["top"]}>
+      <Text variant="headlineLarge" className="my-4 mx-5">
         Notifications
-      </Text> */}
+      </Text>
       <FlatList
         data={notifications}
         keyExtractor={(item, index) => `${item.timestamp}-${index}`}

@@ -1,5 +1,5 @@
 import { ScrollView, View } from "react-native";
-import { Text, Divider, useTheme } from "react-native-paper";
+import { Divider } from "react-native-paper";
 import { useLocalSearchParams, Stack } from "expo-router";
 import {
   useUserDetails,
@@ -10,21 +10,33 @@ import {
   UserInfoCard,
   UserSubscriptionCard,
 } from "../../../src/components/admin";
+import Container from "../../../src/components/common/Container";
 import Loading from "../../../src/components/common/Loading";
+import ErrorScreen from "../../../src/components/common/ErrorScreen";
 
 export default function UserDetailsScreen() {
-  const theme = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const {
     data: user,
     isLoading: isLoadingUser,
     isError: isUserError,
-  } = useUserDetails(id);
-  const { data: subscription, isLoading: isLoadingSubscription } =
-    useUserSubscription(id);
+    error: userError,
+    refetch: refetchUser,
+  } = useUserDetails(id as string);
+
+  const {
+    data: subscription,
+    isLoading: isLoadingSubscription,
+    refetch: refetchSubscription,
+  } = useUserSubscription(id as string);
 
   const isLoading = isLoadingUser || isLoadingSubscription;
+
+  const handleRetry = () => {
+    refetchUser();
+    refetchSubscription();
+  };
 
   if (isLoading) {
     return <Loading size="large" />;
@@ -32,31 +44,31 @@ export default function UserDetailsScreen() {
 
   if (isUserError || !user) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <Text className="text-center" style={{ color: theme.colors.error }}>
-          Failed to load user details
-        </Text>
-      </View>
+      <ErrorScreen
+        message={userError?.message || "Failed to load user details"}
+        onRetry={handleRetry}
+      />
     );
   }
 
   return (
-    <>
+    <Container edges={["top", "bottom"]}>
       <Stack.Screen
         options={{
-          title: user.name,
-          headerShown: true,
+          headerShown: false,
         }}
       />
-      <ScrollView className="flex-1">
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <ProfileHeader name={user.name} email={user.email} role={user.role} />
 
-        <Divider className="mx-5" />
+        <Divider className="mx-6" />
 
-        <UserInfoCard id={user.id} email={user.email} role={user.role} />
+        <View className="py-4">
+          <UserInfoCard id={user.id} email={user.email} role={user.role} />
 
-        <UserSubscriptionCard subscription={subscription} />
+          <UserSubscriptionCard subscription={subscription} />
+        </View>
       </ScrollView>
-    </>
+    </Container>
   );
 }

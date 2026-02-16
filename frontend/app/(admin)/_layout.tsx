@@ -32,7 +32,7 @@ export default function AdminLayout() {
         name="dashboard"
         options={{
           title: "Dashboard",
-          headerShown: true,
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="view-dashboard"
@@ -46,7 +46,7 @@ export default function AdminLayout() {
         name="requests"
         options={{
           title: "User Requests",
-          headerShown: true,
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="clipboard-list-outline"
@@ -60,7 +60,7 @@ export default function AdminLayout() {
         name="meal-offs"
         options={{
           title: "Meal-Offs",
-          headerShown: true,
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="food-off"
@@ -74,7 +74,7 @@ export default function AdminLayout() {
         name="users"
         options={{
           title: "Users",
-          headerShown: true,
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="account-group"
@@ -88,6 +88,7 @@ export default function AdminLayout() {
         name="notifications"
         options={{
           title: "Notifications",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="bell" color={color} size={size} />
           ),
@@ -97,7 +98,7 @@ export default function AdminLayout() {
         name="user/[id]"
         options={{
           href: null,
-          headerShown: true,
+          headerShown: false,
         }}
       />
     </Tabs>

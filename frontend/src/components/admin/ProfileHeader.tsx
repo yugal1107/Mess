@@ -14,31 +14,37 @@ export default function ProfileHeader({
 }: ProfileHeaderProps) {
   const theme = useTheme();
 
-  const getRoleColor = (role: string) => {
-    return role === "ADMIN" ? "#9b59b6" : "#3498db";
-  };
-
   return (
     <View className="items-center py-8 px-5">
       <Avatar.Text
-        size={80}
+        size={100}
         label={name?.[0]?.toUpperCase() || "?"}
         style={{ backgroundColor: theme.colors.primary }}
       />
-      <Text variant="headlineMedium" className="mt-4 font-bold">
+      <Text variant="headlineMedium" className="mt-4 font-bold text-center">
         {name}
       </Text>
       <Text
-        variant="bodyLarge"
-        className="mt-1"
-        style={{ color: theme.colors.outline }}
+        variant="titleMedium"
+        className="mt-1 text-center"
+        style={{ color: theme.colors.onSurfaceVariant }}
       >
         {email}
       </Text>
       <Chip
-        className="mt-3"
-        style={{ backgroundColor: getRoleColor(role) }}
-        textStyle={{ color: "#fff" }}
+        className="mt-4"
+        style={{
+          backgroundColor:
+            role === "ADMIN"
+              ? theme.colors.tertiaryContainer
+              : theme.colors.secondaryContainer,
+        }}
+        textStyle={{
+          color:
+            role === "ADMIN"
+              ? theme.colors.onTertiaryContainer
+              : theme.colors.onSecondaryContainer,
+        }}
       >
         {role}
       </Chip>
