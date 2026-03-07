@@ -83,6 +83,29 @@ export interface CustomOffDetailDto {
   user: UserDto;
 }
 
+// --- Password Reset DTOs ---
+export interface ForgotPasswordRequestDto {
+  email: string;
+}
+
+export interface ForgotPasswordResponseDto {
+  resetToken: string;
+}
+
+export interface VerifyOtpRequestDto {
+  resetToken: string;
+  otp: string;
+}
+
+export interface ResetPasswordRequestDto {
+  resetToken: string;
+  newPassword: string;
+}
+
+export interface SuccessResponseDto {
+  message: string;
+}
+
 // --- Notification DTOs ---
 export interface NotificationDto {
   type: "SUBSCRIPTION_EXPIRY" | "MEAL_UPDATE" | "GENERAL";

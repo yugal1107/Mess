@@ -21,6 +21,8 @@ export default function LoginScreen() {
   useEffect(() => {
     if (params.signup_success === "true") {
       setSuccess("Account created successfully! Please log in.");
+    } else if (params.reset_success === "true") {
+      setSuccess("Password reset successfully! Please log in.");
     }
   }, [params]);
 
@@ -139,6 +141,11 @@ export default function LoginScreen() {
         >
           Login
         </Button>
+        <Link href="/forgot-password" asChild>
+          <Button mode="text" disabled={loading} className="mt-1">
+            Forgot Password?
+          </Button>
+        </Link>
         <Link href="/signup" asChild>
           <Button mode="text" disabled={loading} className="mt-2">
             Don&apos;t have an account? Sign Up
