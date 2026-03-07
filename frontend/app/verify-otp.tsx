@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { Text, Button, TextInput, useTheme } from "react-native-paper";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams, Redirect } from "expo-router";
 import { useState } from "react";
 import { useVerifyOtp } from "../src/hooks/useAuth";
 import { getErrorMessage } from "../src/utils/errorHelper";
@@ -16,10 +16,9 @@ export default function VerifyOtpScreen() {
 
   const { mutate: verifyOtp, isPending } = useVerifyOtp();
 
-  // Guard: if somehow this screen is reached without a resetToken, go back
+  // Guard: declarative redirect avoids side effects during render
   if (!resetToken) {
-    router.replace("/forgot-password");
-    return null;
+    return <Redirect href="/forgot-password" />;
   }
 
   const validate = (): boolean => {
