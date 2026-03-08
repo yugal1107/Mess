@@ -4,15 +4,24 @@ import {
   UserListDto,
   SubscriptionDto,
   SubscriptionStatus,
+  SubscriptionType,
 } from "../types/dto";
 
-// Fetch all users with optional subscription status filter
+// Fetch all users with optional subscription status and type filters
 export const fetchAllUsers = async (
-  status?: SubscriptionStatus
+  status?: SubscriptionStatus,
+  type?: SubscriptionType
 ): Promise<UserListDto> => {
-  const params = status ? { status } : {};
+  const params: Record<string, string> = {};
+  if (status) params.status = status;
+  if (type) params.type = type;
   const response = await apiClient.get("/user/all", { params });
-  console.log("Fetched users:", response.data);
+  return response.data.data;
+};
+
+// Search users by name
+export const searchUsersByName = async (name: string): Promise<UserListDto> => {
+  const response = await apiClient.get(`/user/search/${encodeURIComponent(name)}`);
   return response.data.data;
 };
 

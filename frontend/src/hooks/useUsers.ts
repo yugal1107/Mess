@@ -2,18 +2,30 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as UserApi from "../api/userApi";
 import * as SubscriptionApi from "../api/subscriptionApi";
-import { SubscriptionStatus, UpdateMealCountRequestDto } from "../types/dto";
+import { SubscriptionStatus, SubscriptionType, UpdateMealCountRequestDto } from "../types/dto";
 
 // --- Custom Hooks ---
 
 /**
- * Fetch all users with optional subscription status filter
- * @param status - Optional filter: "ACTIVE" | "INACTIVE" | "REQUESTED"
+ * Fetch all users with optional subscription status and type filters.
+ * Note: type filter only applies server-side when status is ACTIVE.
  */
-export const useUsers = (status?: SubscriptionStatus) => {
+export const useUsers = (status?: SubscriptionStatus, type?: SubscriptionType) => {
   return useQuery({
-    queryKey: ["users", status],
-    queryFn: () => UserApi.fetchAllUsers(status),
+    queryKey: ["users", status, type],
+    queryFn: () => UserApi.fetchAllUsers(status, type),
+  });
+};
+
+/**
+ * Search users by name using the backend search endpoint.
+ * Only fires when name is non-empty.
+ */
+export const useSearchUsers = (name: string) => {
+  return useQuery({
+    queryKey: ["usersSearch", name],
+    queryFn: () => UserApi.searchUsersByName(name),
+    enabled: name.trim().length > 0,
   });
 };
 

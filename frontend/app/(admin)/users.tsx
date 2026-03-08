@@ -1,45 +1,280 @@
-import { useState } from "react";
-import { View, FlatList } from "react-native";
-import { Text, Chip, useTheme, Badge } from "react-native-paper";
+import { useState, useRef, useCallback } from "react";
+import { View, FlatList, Modal, TouchableWithoutFeedback, StyleSheet } from "react-native";
+import {
+  Text,
+  Badge,
+  Searchbar,
+  Divider,
+  useTheme,
+  Icon,
+  Surface,
+  TouchableRipple,
+} from "react-native-paper";
 import { useRouter } from "expo-router";
-import { useUsers } from "../../src/hooks/useUsers";
-import { SubscriptionStatus } from "../../src/types/dto";
+import { useUsers, useSearchUsers } from "../../src/hooks/useUsers";
+import { SubscriptionStatus, SubscriptionType } from "../../src/types/dto";
 import { UserListItem } from "../../src/components/admin";
 import Container from "../../src/components/common/Container";
 import Loading from "../../src/components/common/Loading";
 import EmptyState from "../../src/components/common/EmptyState";
 import ErrorScreen from "../../src/components/common/ErrorScreen";
 
-type FilterOption = SubscriptionStatus | "ALL";
+type StatusFilter = SubscriptionStatus | "ALL";
+type TypeFilter = SubscriptionType | "ALL";
 
-interface FilterConfig {
+interface Option<T extends string> {
   label: string;
-  value: FilterOption;
+  value: T;
 }
 
-const FILTER_CONFIG: FilterConfig[] = [
-  { label: "All Users", value: "ALL" },
+const STATUS_OPTIONS: Option<StatusFilter>[] = [
+  { label: "All Statuses", value: "ALL" },
   { label: "Active", value: "ACTIVE" },
   { label: "Requested", value: "REQUESTED" },
   { label: "Inactive", value: "INACTIVE" },
 ];
 
+const TYPE_OPTIONS: Option<TypeFilter>[] = [
+  { label: "All Types", value: "ALL" },
+  { label: "Mess", value: "MESS" },
+  { label: "Home Delivery", value: "HOME_DELIVERY" },
+];
+
+// --- Standalone Dropdown using RN Modal (no Menu positioning issues) ---
+interface DropdownProps<T extends string> {
+  label: string;
+  disabled?: boolean;
+  options: Option<T>[];
+  selectedValue: T;
+  onSelect: (value: T) => void;
+}
+
+function Dropdown<T extends string>({
+  label,
+  disabled,
+  options,
+  selectedValue,
+  onSelect,
+}: DropdownProps<T>) {
+  const theme = useTheme();
+  const buttonRef = useRef<View>(null);
+  const [visible, setVisible] = useState(false);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 });
+
+  const openDropdown = useCallback(() => {
+    if (disabled) return;
+    buttonRef.current?.measureInWindow((x, y, width, height) => {
+      setDropdownPos({ top: y + height + 6, left: x, width });
+      setVisible(true);
+    });
+  }, [disabled]);
+
+  const closeDropdown = useCallback(() => setVisible(false), []);
+
+  const handleSelect = useCallback(
+    (value: T) => {
+      onSelect(value);
+      closeDropdown();
+    },
+    [onSelect, closeDropdown]
+  );
+
+  const isActive = !disabled && visible;
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* Trigger button */}
+      <TouchableRipple
+        ref={buttonRef}
+        onPress={openDropdown}
+        disabled={disabled}
+        borderless={false}
+        style={{
+          borderRadius: 12,
+          overflow: "hidden",
+        }}
+      >
+        <View
+          style={{
+            height: 48,
+            borderRadius: 12,
+            borderWidth: 1.5,
+            borderColor: disabled
+              ? theme.colors.outlineVariant
+              : isActive
+              ? theme.colors.primary
+              : theme.colors.outline,
+            backgroundColor: disabled
+              ? theme.colors.surfaceVariant
+              : theme.colors.surface,
+            flexDirection: "row",
+            alignItems: "center",
+            paddingHorizontal: 14,
+            gap: 8,
+          }}
+        >
+          <Text
+            variant="bodyMedium"
+            numberOfLines={1}
+            style={{
+              flex: 1,
+              color: disabled
+                ? theme.colors.onSurfaceVariant
+                : theme.colors.onSurface,
+              opacity: disabled ? 0.5 : 1,
+            }}
+          >
+            {label}
+          </Text>
+          <Icon
+            source={visible ? "chevron-up" : "chevron-down"}
+            size={20}
+            color={
+              disabled
+                ? theme.colors.onSurfaceVariant
+                : isActive
+                ? theme.colors.primary
+                : theme.colors.onSurfaceVariant
+            }
+          />
+        </View>
+      </TouchableRipple>
+
+      {/* Dropdown modal — fully isolated from parent layout */}
+      <Modal
+        visible={visible}
+        transparent
+        animationType="fade"
+        onRequestClose={closeDropdown}
+        statusBarTranslucent
+      >
+        <TouchableWithoutFeedback onPress={closeDropdown}>
+          <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.15)" }}>
+            <TouchableWithoutFeedback>
+              <Surface
+                elevation={2}
+                style={{
+                  position: "absolute",
+                  top: dropdownPos.top,
+                  left: dropdownPos.left,
+                  width: dropdownPos.width,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  borderWidth: 1,
+                  borderColor: theme.colors.outlineVariant,
+                }}
+              >
+                {options.map((option, index) => {
+                  const isSelected = selectedValue === option.value;
+                  return (
+                    <TouchableRipple
+                      key={option.value}
+                      onPress={() => handleSelect(option.value)}
+                      style={{
+                        backgroundColor: isSelected
+                          ? theme.colors.secondaryContainer
+                          : "transparent",
+                        borderTopWidth: index === 0 ? 0 : StyleSheet.hairlineWidth,
+                        borderTopColor: theme.colors.outlineVariant,
+                      }}
+                    >
+                      <View
+                        style={{
+                          paddingHorizontal: 16,
+                          paddingVertical: 14,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Text
+                          variant="bodyMedium"
+                          style={{
+                            color: isSelected
+                              ? theme.colors.onSecondaryContainer
+                              : theme.colors.onSurface,
+                            fontWeight: isSelected ? "600" : "400",
+                          }}
+                        >
+                          {option.label}
+                        </Text>
+                        {isSelected && (
+                          <Icon
+                            source="check"
+                            size={18}
+                            color={theme.colors.onSecondaryContainer}
+                          />
+                        )}
+                      </View>
+                    </TouchableRipple>
+                  );
+                })}
+              </Surface>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    </View>
+  );
+}
+
+// --- Main Screen ---
 export default function AllUsersScreen() {
   const theme = useTheme();
   const router = useRouter();
-  const [selectedFilter, setSelectedFilter] = useState<FilterOption>("ALL");
 
-  const statusFilter = selectedFilter === "ALL" ? undefined : selectedFilter;
-  const { data, isLoading, isError, error, refetch } = useUsers(statusFilter);
+  // --- Filter state ---
+  const [selectedStatus, setSelectedStatus] = useState<StatusFilter>("ALL");
+  const [selectedType, setSelectedType] = useState<TypeFilter>("ALL");
 
+  // --- Search state ---
+  const [searchInput, setSearchInput] = useState("");
+  const [submittedQuery, setSubmittedQuery] = useState("");
+
+  const isSearchMode = submittedQuery.trim().length > 0;
+
+  // --- API queries ---
+  const statusParam = selectedStatus === "ALL" ? undefined : selectedStatus;
+  const typeParam =
+    selectedStatus === "ACTIVE" && selectedType !== "ALL" ? selectedType : undefined;
+
+  const filterQuery = useUsers(statusParam, typeParam);
+  const searchQuery = useSearchUsers(submittedQuery);
+
+  const activeQuery = isSearchMode ? searchQuery : filterQuery;
+  const { data, isLoading, isError, error, refetch } = activeQuery;
+
+  // --- Handlers ---
   const handleUserPress = (userId: string) => {
     router.push(`/(admin)/user/${userId}`);
   };
 
-  const handleFilterPress = (filter: FilterOption) => {
-    setSelectedFilter(filter);
+  const handleSearchSubmit = () => {
+    setSubmittedQuery(searchInput.trim());
   };
 
+  const handleSearchClear = () => {
+    setSearchInput("");
+    setSubmittedQuery("");
+  };
+
+  const handleStatusSelect = (value: StatusFilter) => {
+    setSelectedStatus(value);
+    if (value !== "ACTIVE") setSelectedType("ALL");
+  };
+
+  const handleTypeSelect = (value: TypeFilter) => {
+    setSelectedType(value);
+  };
+
+  const isTypeDisabled = isSearchMode || selectedStatus !== "ACTIVE";
+
+  const statusLabel =
+    STATUS_OPTIONS.find((o) => o.value === selectedStatus)?.label ?? "All Statuses";
+  const typeLabel =
+    TYPE_OPTIONS.find((o) => o.value === selectedType)?.label ?? "All Types";
+
+  // --- Render ---
   if (isLoading) {
     return <Loading size="large" />;
   }
@@ -56,29 +291,63 @@ export default function AllUsersScreen() {
   return (
     <Container className="px-2.5 pt-5" edges={["top"]} heading="Users">
 
-      {/* Filter Section */}
-      <View className="mb-4 flex-row flex-wrap gap-2 px-1">
-        {FILTER_CONFIG.map((option) => (
-          <Chip
-            key={option.value}
-            selected={selectedFilter === option.value}
-            onPress={() => handleFilterPress(option.value)}
-            showSelectedOverlay
-            mode="outlined"
-            style={{
-              backgroundColor:
-                selectedFilter === option.value
-                  ? theme.colors.primaryContainer
-                  : theme.colors.surface,
-            }}
-          >
-            {option.label}
-          </Chip>
-        ))}
+      {/* Search Bar */}
+      <Searchbar
+        placeholder="Search by name..."
+        value={searchInput}
+        onChangeText={setSearchInput}
+        onSubmitEditing={handleSearchSubmit}
+        onIconPress={handleSearchSubmit}
+        onClearIconPress={handleSearchClear}
+        style={{
+          marginBottom: 12,
+          backgroundColor: theme.colors.surfaceVariant,
+        }}
+        inputStyle={{ color: theme.colors.onSurface }}
+      />
+
+      {/* Filter Dropdowns */}
+      <View style={{ flexDirection: "row", gap: 10, marginBottom: 16 }}>
+        <Dropdown
+          label={statusLabel}
+          disabled={isSearchMode}
+          options={STATUS_OPTIONS}
+          selectedValue={selectedStatus}
+          onSelect={handleStatusSelect}
+        />
+
+        <Dropdown
+          label={typeLabel}
+          disabled={isTypeDisabled}
+          options={TYPE_OPTIONS}
+          selectedValue={selectedType}
+          onSelect={handleTypeSelect}
+        />
       </View>
 
-      {/* User Count Badge */}
-      <View className="px-1 mb-3 flex-row items-center">
+      {/* Type filter hint */}
+      {!isSearchMode && selectedStatus !== "ACTIVE" && selectedStatus !== "ALL" && (
+        <Text
+          variant="bodySmall"
+          style={{
+            color: theme.colors.onSurfaceVariant,
+            marginBottom: 12,
+            paddingHorizontal: 4,
+          }}
+        >
+          Type filter is only available for Active users
+        </Text>
+      )}
+
+      {/* Result count */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: 12,
+          paddingHorizontal: 4,
+        }}
+      >
         <Badge
           style={{
             backgroundColor: theme.colors.primaryContainer,
@@ -89,12 +358,16 @@ export default function AllUsersScreen() {
         </Badge>
         <Text
           variant="bodyMedium"
-          className="ml-2"
-          style={{ color: theme.colors.onSurfaceVariant }}
+          style={{ marginLeft: 8, color: theme.colors.onSurfaceVariant }}
         >
-          user{data?.count !== 1 ? "s" : ""} found
+          {isSearchMode
+            ? `result${data?.count !== 1 ? "s" : ""} for "${submittedQuery}"`
+            : `user${data?.count !== 1 ? "s" : ""} found`}
         </Text>
       </View>
+
+      {/* Divider */}
+      <Divider style={{ marginBottom: 12 }} />
 
       {/* User List */}
       <FlatList
@@ -114,13 +387,15 @@ export default function AllUsersScreen() {
           />
         )}
         ListEmptyComponent={
-          <View className="mt-8">
+          <View style={{ marginTop: 32 }}>
             <EmptyState
-              icon="account-group-outline"
+              icon="account-search-outline"
               message={
-                selectedFilter === "ALL"
+                isSearchMode
+                  ? `No users found matching "${submittedQuery}"`
+                  : selectedStatus === "ALL"
                   ? "No users found in the system"
-                  : `No ${selectedFilter.toLowerCase()} users found`
+                  : `No ${selectedStatus.toLowerCase()} users found`
               }
             />
           </View>

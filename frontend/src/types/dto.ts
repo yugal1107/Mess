@@ -52,11 +52,14 @@ export interface UserListDto {
 // Filter type for subscription status
 export type SubscriptionStatus = "ACTIVE" | "INACTIVE" | "REQUESTED";
 
+// Filter type for subscription type
+export type SubscriptionType = "MESS" | "HOME_DELIVERY";
+
 // --- Subscription DTOs ---
 export interface SubscriptionDto {
   id: string;
-  status: "ACTIVE" | "INACTIVE" | "REQUESTED";
-  type: "MESS" | "HOME_DELIVERY";
+  status: SubscriptionStatus;
+  type: SubscriptionType;
   meals: number;
   date: string; // LocalDateTime from backend, will be string in TS
 }
