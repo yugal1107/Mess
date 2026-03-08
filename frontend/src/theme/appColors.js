@@ -14,6 +14,8 @@ module.exports = {
         onSurface: "#1D1B20",
         error: "#B3261E",
         onError: "#FFFFFF",
+        successContainer: "#C8E6C9",
+        onSuccessContainer: "#1B5E20",
     },
     dark: {
         primary: "#D0BCFF",
@@ -29,5 +31,7 @@ module.exports = {
         onSurface: "#E6E1E5",
         error: "#F2B8B5",
         onError: "#601410",
+        successContainer: "#1B5E20",
+        onSuccessContainer: "#C8E6C9",
     },
 };

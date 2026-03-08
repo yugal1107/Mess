@@ -9,6 +9,7 @@ interface StatCardProps {
   onPress?: () => void;
   loading?: boolean;
   variant?: "full" | "half";
+  badge?: { label: string; finalized: boolean };
 }
 
 export default function StatCard({
@@ -18,6 +19,7 @@ export default function StatCard({
   onPress,
   loading,
   variant = "half",
+  badge,
 }: StatCardProps) {
   const theme = useTheme();
   const isFullWidth = variant === "full";
@@ -74,6 +76,40 @@ export default function StatCard({
           >
             {title}
           </Text>
+          {badge && (
+            <View
+              style={[
+                styles.badge,
+                {
+                  backgroundColor: badge.finalized
+                    ? (theme.colors as any).successContainer
+                    : theme.colors.errorContainer,
+                },
+              ]}
+            >
+              <MaterialCommunityIcons
+                name={badge.finalized ? "check-circle" : "clock-outline"}
+                size={10}
+                color={
+                  badge.finalized
+                    ? (theme.colors as any).onSuccessContainer
+                    : theme.colors.onErrorContainer
+                }
+              />
+              <Text
+                variant="labelSmall"
+                style={{
+                  color: badge.finalized
+                    ? (theme.colors as any).onSuccessContainer
+                    : theme.colors.onErrorContainer,
+                  marginLeft: 3,
+                  fontWeight: "600",
+                }}
+              >
+                {badge.label}
+              </Text>
+            </View>
+          )}
         </View>
       </Card.Content>
     </Card>
@@ -118,5 +154,13 @@ const styles = StyleSheet.create({
   number: {
     fontWeight: "700",
     marginBottom: 4,
+  },
+  badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
   },
 });

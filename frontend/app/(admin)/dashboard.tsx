@@ -1,5 +1,5 @@
 import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
-import { Text, useTheme, Button } from "react-native-paper";
+import { Text, useTheme, Button, Banner } from "react-native-paper";
 import { useAuth } from "../../src/hooks/AuthContext";
 import { useRouter, Href } from "expo-router";
 import { useUsers } from "../../src/hooks/useUsers";
@@ -22,6 +22,15 @@ export default function AdminDashboardScreen() {
   const { data: activeUsers, isLoading: loadingActive } = useUsers("ACTIVE");
   const { data: lunchOffs, isLoading: loadingLunch } = useAllLunchOffs();
   const { data: dinnerOffs, isLoading: loadingDinner } = useAllDinnerOffs();
+
+  // Determine if meal off counts are finalized based on scheduler times
+  // Lunch finalizes at 8:01 AM, dinner at 4:01 PM (IST)
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const totalMinutes = hours * 60 + minutes;
+  const lunchFinalized = totalMinutes >= 8 * 60 + 1;
+  const dinnerFinalized = totalMinutes >= 16 * 60 + 1;
 
   const handleLogout = () => {
     logout();
@@ -80,6 +89,16 @@ export default function AdminDashboardScreen() {
           </View>
         </View>
 
+        {/* Info Banner */}
+        <Banner
+          visible={true}
+          icon="information"
+          style={{ marginBottom: 20, borderRadius: 12 }}
+        >
+          Meal off counts are finalized at 8:01 AM for lunch and 4:01 PM for
+          dinner. Users cannot mark meals off after these times.
+        </Banner>
+
         {/* Statistics Section */}
         <View style={{ marginBottom: isSmallDevice ? 20 : 28 }}>
           <Text
@@ -125,6 +144,10 @@ export default function AdminDashboardScreen() {
               icon="food-off"
               onPress={() => navigateTo("/(admin)/meal-offs")}
               loading={loadingLunch}
+              badge={{
+                label: lunchFinalized ? "Finalized" : "Live",
+                finalized: lunchFinalized,
+              }}
             />
             <StatCard
               title="Dinner Offs"
@@ -132,6 +155,10 @@ export default function AdminDashboardScreen() {
               icon="food-variant-off"
               onPress={() => navigateTo("/(admin)/meal-offs")}
               loading={loadingDinner}
+              badge={{
+                label: dinnerFinalized ? "Finalized" : "Live",
+                finalized: dinnerFinalized,
+              }}
             />
           </View>
         </View>
