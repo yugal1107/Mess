@@ -1,5 +1,5 @@
 import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
-import { Text, useTheme, Button, Banner } from "react-native-paper";
+import { Text, useTheme, Button } from "react-native-paper";
 import { useAuth } from "../../src/hooks/AuthContext";
 import { useRouter, Href } from "expo-router";
 import { useUsers } from "../../src/hooks/useUsers";
@@ -89,16 +89,6 @@ export default function AdminDashboardScreen() {
           </View>
         </View>
 
-        {/* Info Banner */}
-        <Banner
-          visible={true}
-          icon="information"
-          style={{ marginBottom: 20, borderRadius: 12 }}
-        >
-          Meal off counts are finalized at 8:01 AM for lunch and 4:01 PM for
-          dinner. Users cannot mark meals off after these times.
-        </Banner>
-
         {/* Statistics Section */}
         <View style={{ marginBottom: isSmallDevice ? 20 : 28 }}>
           <Text
@@ -145,7 +135,7 @@ export default function AdminDashboardScreen() {
               onPress={() => navigateTo("/(admin)/meal-offs")}
               loading={loadingLunch}
               badge={{
-                label: lunchFinalized ? "Finalized" : "Live",
+                label: lunchFinalized ? "Confirmed" : "Estimated",
                 finalized: lunchFinalized,
               }}
             />
@@ -156,7 +146,29 @@ export default function AdminDashboardScreen() {
               onPress={() => navigateTo("/(admin)/meal-offs")}
               loading={loadingDinner}
               badge={{
-                label: dinnerFinalized ? "Finalized" : "Live",
+                label: dinnerFinalized ? "Confirmed" : "Estimated",
+                finalized: dinnerFinalized,
+              }}
+            />
+            <StatCard
+              title="Expected Lunch"
+              count={Math.max(0, (activeUsers?.count ?? 0) - (lunchOffs?.count ?? 0))}
+              icon="food"
+              onPress={() => navigateTo("/(admin)/meal-offs")}
+              loading={loadingActive || loadingLunch}
+              badge={{
+                label: lunchFinalized ? "Confirmed" : "Estimated",
+                finalized: lunchFinalized,
+              }}
+            />
+            <StatCard
+              title="Expected Dinner"
+              count={Math.max(0, (activeUsers?.count ?? 0) - (dinnerOffs?.count ?? 0))}
+              icon="food-variant"
+              onPress={() => navigateTo("/(admin)/meal-offs")}
+              loading={loadingActive || loadingDinner}
+              badge={{
+                label: dinnerFinalized ? "Confirmed" : "Estimated",
                 finalized: dinnerFinalized,
               }}
             />
