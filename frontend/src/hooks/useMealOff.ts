@@ -85,11 +85,30 @@ export const useCancelCustomOffByUserId = () => {
   return useMutation({
     mutationFn: MealOffApi.cancelCustomOffByUserId,
     onSuccess: (_, userId) => {
-      // Invalidate the specific user's custom off details and the list of all custom offs
       queryClient.invalidateQueries({
         queryKey: ["customOffDetails", userId],
       });
       queryClient.invalidateQueries({ queryKey: ["allCustomOffs"] });
+    },
+  });
+};
+
+export const useCancelLunchOffByUserId = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: MealOffApi.cancelLunchOffByUserId,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allLunchOffs"] });
+    },
+  });
+};
+
+export const useCancelDinnerOffByUserId = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: MealOffApi.cancelDinnerOffByUserId,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allDinnerOffs"] });
     },
   });
 };

@@ -10,6 +10,7 @@ interface UserListItemProps {
   isFirst?: boolean;
   isLast?: boolean;
   onPress: (userId: string) => void;
+  rightContent?: React.ReactNode;
 }
 
 export default function UserListItem({
@@ -20,6 +21,7 @@ export default function UserListItem({
   isFirst,
   isLast,
   onPress,
+  rightContent,
 }: UserListItemProps) {
   const theme = useTheme();
 
@@ -98,25 +100,29 @@ export default function UserListItem({
             color={theme.colors.onPrimaryContainer}
           />
         )}
-        right={(props) => (
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              width: 32,
-              height: 32,
-              borderRadius: 16,
-              backgroundColor: theme.colors.surfaceVariant,
-            }}
-          >
-            <List.Icon
-              {...props}
-              icon="chevron-right"
-              color={theme.colors.onSurfaceVariant}
-              style={{ margin: 0 }}
-            />
-          </View>
-        )}
+        right={(props) =>
+          rightContent ? (
+            rightContent
+          ) : (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                width: 32,
+                height: 32,
+                borderRadius: 16,
+                backgroundColor: theme.colors.surfaceVariant,
+              }}
+            >
+              <List.Icon
+                {...props}
+                icon="chevron-right"
+                color={theme.colors.onSurfaceVariant}
+                style={{ margin: 0 }}
+              />
+            </View>
+          )
+        }
         onPress={() => onPress(id)}
       />
     </View>

@@ -83,3 +83,11 @@ export const fetchCustomOffDetailsByUserId = async (
 export const cancelCustomOffByUserId = (userId: string) => {
   return apiClient.delete(`/mealoff/custom/${userId}`);
 };
+
+export const cancelLunchOffByUserId = (userId: string) => {
+  return apiClient.delete(`/mealoff/lunch/${userId}`);
+};
+
+export const cancelDinnerOffByUserId = (userId: string) => {
+  return apiClient.delete(`/mealoff/dinner/${userId}`);
+};
