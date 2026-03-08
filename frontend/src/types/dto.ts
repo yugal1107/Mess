@@ -112,8 +112,16 @@ export interface SuccessResponseDto {
 }
 
 // --- Notification DTOs ---
+export type NotificationType =
+  | "SUBSCRIPTION_EXPIRY"
+  | "MEAL_COUNT"
+  | "MEAL_UPDATE"
+  | "MEAL_OFF"
+  | "ANNOUNCEMENT"
+  | "ADMIN_UPDATE";
+
 export interface NotificationDto {
-  type: "SUBSCRIPTION_EXPIRY" | "MEAL_UPDATE" | "GENERAL";
+  type: NotificationType;
   message: string;
   isRead: boolean;
   timestamp: string; // LocalDateTime from backend

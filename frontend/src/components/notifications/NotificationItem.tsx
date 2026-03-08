@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { NotificationDto } from "../../types/dto";
+import { NotificationDto, NotificationType } from "../../types/dto";
 
 // Helper to format timestamp
 const formatTimestamp = (timestamp: string): string => {
@@ -19,20 +19,51 @@ const formatTimestamp = (timestamp: string): string => {
   return date.toLocaleDateString();
 };
 
-// Get icon based on notification type
-const getNotificationIcon = (
-  type: NotificationDto["type"]
-): { name: "alert-circle" | "food" | "bell"; color: string } => {
-  switch (type) {
-    case "SUBSCRIPTION_EXPIRY":
-      return { name: "alert-circle", color: "#ed1010ff" };
-    case "MEAL_UPDATE":
-      return { name: "bell", color: "#f26900ff" };
-    case "GENERAL":
-    default:
-      return { name: "bell", color: "#9b59b6" };
-  }
+// --- Type config ---
+interface TypeConfig {
+  iconName: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+  iconBg: string;
+  label: string;
+}
+
+const TYPE_CONFIG: Record<NotificationType, TypeConfig> = {
+  SUBSCRIPTION_EXPIRY: {
+    iconName: "alert-circle",
+    iconBg: "#c0392b",
+    label: "Subscription",
+  },
+  MEAL_COUNT: {
+    iconName: "counter",
+    iconBg: "#2980b9",
+    label: "Meal Count",
+  },
+  MEAL_UPDATE: {
+    iconName: "food",
+    iconBg: "#e67e22",
+    label: "Meal Update",
+  },
+  MEAL_OFF: {
+    iconName: "food-off",
+    iconBg: "#d4a017",
+    label: "Meal Off",
+  },
+  ANNOUNCEMENT: {
+    iconName: "bullhorn",
+    iconBg: "#8e44ad",
+    label: "Announcement",
+  },
+  ADMIN_UPDATE: {
+    iconName: "shield-account",
+    iconBg: "#16a085",
+    label: "Admin Update",
+  },
 };
+
+const getFallbackConfig = (): TypeConfig => ({
+  iconName: "bell",
+  iconBg: "#7f8c8d",
+  label: "Notification",
+});
 
 interface NotificationItemProps {
   item: NotificationDto;
@@ -46,7 +77,7 @@ export default function NotificationItem({
   isLast,
 }: NotificationItemProps) {
   const theme = useTheme();
-  const icon = getNotificationIcon(item.type);
+  const config = TYPE_CONFIG[item.type] ?? getFallbackConfig();
 
   const largeRadius = 16;
   const smallRadius = 4;
@@ -67,17 +98,34 @@ export default function NotificationItem({
         alignItems: "center",
       }}
     >
+      {/* Icon avatar */}
       <View
         className="w-10 h-10 rounded-full justify-center items-center mr-3"
-        style={{ backgroundColor: theme.colors.primary }}
+        style={{ backgroundColor: config.iconBg }}
       >
         <MaterialCommunityIcons
-          name={icon.name}
+          name={config.iconName}
           size={20}
-          color={theme.colors.onPrimary}
+          color="#ffffff"
         />
       </View>
+
+      {/* Content */}
       <View className="flex-1">
+        {/* Type badge */}
+        <View
+          className="self-start px-2 py-0.5 rounded-full mb-1"
+          style={{ backgroundColor: theme.colors.secondaryContainer }}
+        >
+          <Text
+            variant="labelSmall"
+            style={{ color: theme.colors.onSecondaryContainer }}
+          >
+            {config.label}
+          </Text>
+        </View>
+
+        {/* Message */}
         <Text
           variant="bodyMedium"
           className={`mb-1 ${!item.isRead ? "font-bold" : ""}`}
@@ -89,10 +137,14 @@ export default function NotificationItem({
         >
           {item.message}
         </Text>
+
+        {/* Timestamp */}
         <Text variant="bodySmall" style={{ color: theme.colors.outline }}>
           {formatTimestamp(item.timestamp)}
         </Text>
       </View>
+
+      {/* Unread dot */}
       {!item.isRead && (
         <View
           className="w-2.5 h-2.5 rounded-full ml-2"

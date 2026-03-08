@@ -1,13 +1,13 @@
 // src/hooks/useNotifications.ts
 import { useQuery } from "@tanstack/react-query";
 import * as NotificationApi from "../api/notificationApi";
-import { NotificationDto } from "../types/dto";
+import { NotificationDto, NotificationType } from "../types/dto";
 
 // --- Custom Hooks ---
-export const useNotifications = () => {
+export const useNotifications = (type?: NotificationType) => {
   return useQuery({
-    queryKey: ["notifications"],
-    queryFn: NotificationApi.fetchNotifications,
+    queryKey: ["notifications", type ?? "ALL"],
+    queryFn: () => NotificationApi.fetchNotifications(type),
     // Refetch notifications every 30 seconds to keep them updated
     refetchInterval: 30000,
   });
