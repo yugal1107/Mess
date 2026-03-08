@@ -1,7 +1,8 @@
 // src/hooks/useUsers.ts
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import * as UserApi from "../api/userApi";
-import { SubscriptionStatus } from "../types/dto";
+import * as SubscriptionApi from "../api/subscriptionApi";
+import { SubscriptionStatus, UpdateMealCountRequestDto } from "../types/dto";
 
 // --- Custom Hooks ---
 
@@ -36,5 +37,16 @@ export const useUserSubscription = (userId: string) => {
     queryKey: ["userSubscription", userId],
     queryFn: () => UserApi.fetchUserSubscription(userId),
     enabled: !!userId,
+  });
+};
+
+export const useUpdateSubscription = (userId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: UpdateMealCountRequestDto) =>
+      SubscriptionApi.updateSubscriptionByUserId(userId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userSubscription", userId] });
+    },
   });
 };

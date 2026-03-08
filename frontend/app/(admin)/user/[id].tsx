@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { ScrollView } from "react-native";
 import { useLocalSearchParams, Stack } from "expo-router";
+import { Snackbar } from "react-native-paper";
 import {
   useUserDetails,
   useUserSubscription,
+  useUpdateSubscription,
 } from "../../../src/hooks/useUsers";
 import {
   ProfileHeader,
@@ -15,6 +18,14 @@ import ErrorScreen from "../../../src/components/common/ErrorScreen";
 
 export default function UserDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const showSnackbar = (message: string) => {
+    setSnackbarMessage(message);
+    setSnackbarVisible(true);
+  };
 
   const {
     data: user,
@@ -29,6 +40,9 @@ export default function UserDetailsScreen() {
     isLoading: isLoadingSubscription,
     refetch: refetchSubscription,
   } = useUserSubscription(id as string);
+
+  const { mutate: updateSubscription, isPending: isUpdating } =
+    useUpdateSubscription(id as string);
 
   const isLoading = isLoadingUser || isLoadingSubscription;
 
@@ -66,8 +80,30 @@ export default function UserDetailsScreen() {
 
         <UserInfoCard id={user.id} email={user.email} role={user.role} />
 
-        <UserSubscriptionCard subscription={subscription} />
+        <UserSubscriptionCard
+          subscription={subscription}
+          onUpdate={async (data) => {
+            await new Promise<void>((resolve, reject) => {
+              updateSubscription(data, {
+                onSuccess: () => {
+                  showSnackbar("Meal count updated successfully.");
+                  resolve();
+                },
+                onError: (err) => reject(err),
+              });
+            });
+          }}
+          isUpdating={isUpdating}
+        />
       </ScrollView>
+
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={3000}
+      >
+        {snackbarMessage}
+      </Snackbar>
     </Container>
   );
 }

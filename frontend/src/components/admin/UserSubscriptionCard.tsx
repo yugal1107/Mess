@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { View } from "react-native";
-import { Text, Card, useTheme } from "react-native-paper";
+import { Text, Card, useTheme, IconButton } from "react-native-paper";
 import { formatDate } from "../../utils/formatters";
+import { UpdateMealCountRequestDto } from "../../types/dto";
+import EditMealCountModal from "./EditMealCountModal";
 
 interface SubscriptionData {
   status: string;
@@ -11,6 +14,8 @@ interface SubscriptionData {
 
 interface UserSubscriptionCardProps {
   subscription: SubscriptionData | null | undefined;
+  onUpdate?: (data: UpdateMealCountRequestDto) => Promise<void>;
+  isUpdating?: boolean;
 }
 
 const getStatusTheme = (status: string | undefined, theme: any) => {
@@ -36,14 +41,31 @@ const getStatusTheme = (status: string | undefined, theme: any) => {
 
 export default function UserSubscriptionCard({
   subscription,
+  onUpdate,
+  isUpdating = false,
 }: UserSubscriptionCardProps) {
   const theme = useTheme();
   const statusTheme = getStatusTheme(subscription?.status, theme);
 
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View style={{ marginHorizontal: 4, marginVertical: 4, marginBottom: 16 }}>
       <Card mode="elevated">
-        <Card.Title title="Subscription Details" titleVariant="titleMedium" />
+        <Card.Title
+          title="Subscription Details"
+          titleVariant="titleMedium"
+          right={(props) =>
+            onUpdate && subscription ? (
+              <IconButton
+                {...props}
+                icon="pencil"
+                onPress={() => setModalVisible(true)}
+                accessibilityLabel="Edit subscription"
+              />
+            ) : null
+          }
+        />
         <Card.Content style={{ paddingTop: 0 }}>
           {subscription ? (
             <>
@@ -147,9 +169,7 @@ export default function UserSubscriptionCard({
               )}
             </>
           ) : (
-            <View
-              style={{ alignItems: "center", paddingVertical: 16 }}
-            >
+            <View style={{ alignItems: "center", paddingVertical: 16 }}>
               <Text
                 variant="bodyMedium"
                 style={{ color: theme.colors.outline }}
@@ -160,7 +180,14 @@ export default function UserSubscriptionCard({
           )}
         </Card.Content>
       </Card>
+
+      <EditMealCountModal
+        visible={modalVisible}
+        currentMeals={subscription?.meals ?? 0}
+        onDismiss={() => setModalVisible(false)}
+        onSubmit={onUpdate!}
+        isLoading={isUpdating}
+      />
     </View>
   );
 }
-

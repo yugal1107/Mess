@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 import apiClient from "./client";
-import { SubscriptionDto } from "../types/dto";
+import { SubscriptionDto, UpdateMealCountRequestDto } from "../types/dto";
 
 export const fetchSubscriptionDetails =
   async (): Promise<SubscriptionDto | null> => {
@@ -22,4 +22,12 @@ export const requestNewSubscription = (type: string) => {
 
 export const acceptSubscriptionRequest = (userId: string) => {
   return apiClient.post(`/subscription/requests/${userId}`);
+};
+
+export const updateSubscriptionByUserId = async (
+  userId: string,
+  data: UpdateMealCountRequestDto
+): Promise<SubscriptionDto> => {
+  const response = await apiClient.put(`/subscription/${userId}`, data);
+  return response.data.data;
 };

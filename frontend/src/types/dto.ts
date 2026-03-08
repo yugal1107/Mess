@@ -61,6 +61,11 @@ export interface SubscriptionDto {
   date: string; // LocalDateTime from backend, will be string in TS
 }
 
+export interface UpdateMealCountRequestDto {
+  updatedMeals: number;
+  reason?: string;
+}
+
 // --- Meal Off DTOs ---
 export interface TodayMealOffDto {
   id: string;
