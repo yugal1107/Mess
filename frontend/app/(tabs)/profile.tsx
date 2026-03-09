@@ -42,6 +42,16 @@ export default function ProfileScreen() {
               <Text style={{ color: theme.colors.outline }}>Role</Text>
               <Text className="font-bold">{user.role}</Text>
             </View>
+            <View className="flex-row justify-between py-2.5">
+              <Text style={{ color: theme.colors.outline }}>Contact</Text>
+              <Text className="font-bold">{user.contact || "N/A"}</Text>
+            </View>
+            <View className="flex-row justify-between py-2.5">
+              <Text style={{ color: theme.colors.outline }}>Address</Text>
+              <Text className="font-bold" numberOfLines={2} style={{ maxWidth: "60%", textAlign: "right" }}>
+                {user.address || "N/A"}
+              </Text>
+            </View>
           </Card.Content>
         </Card>
         <Button

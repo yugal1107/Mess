@@ -9,12 +9,14 @@ export default function SignUpScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [contact, setContact] = useState("");
+  const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSignUp = async () => {
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !contact || !address) {
       setError("All fields are required.");
       return;
     }
@@ -31,6 +33,8 @@ export default function SignUpScreen() {
         name,
         email,
         password,
+        contact,
+        address,
         role: "STUDENT",
       });
       router.replace({
@@ -91,6 +95,25 @@ export default function SignUpScreen() {
           secureTextEntry
           value={password}
           onChangeText={setPassword}
+          disabled={loading}
+          className="mb-4"
+          style={{ backgroundColor: theme.colors.surface }}
+        />
+        <TextInput
+          label="Contact"
+          mode="outlined"
+          keyboardType="phone-pad"
+          value={contact}
+          onChangeText={setContact}
+          disabled={loading}
+          className="mb-4"
+          style={{ backgroundColor: theme.colors.surface }}
+        />
+        <TextInput
+          label="Address"
+          mode="outlined"
+          value={address}
+          onChangeText={setAddress}
           disabled={loading}
           className="mb-4"
           style={{ backgroundColor: theme.colors.surface }}

@@ -78,7 +78,13 @@ export default function UserDetailsScreen() {
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <ProfileHeader name={user.name} email={user.email} role={user.role} />
 
-        <UserInfoCard id={user.id} email={user.email} role={user.role} />
+        <UserInfoCard
+          id={user.id}
+          email={user.email}
+          role={user.role}
+          contact={user.contact}
+          address={user.address}
+        />
 
         <UserSubscriptionCard
           subscription={subscription}

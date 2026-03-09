@@ -28,6 +28,14 @@ export const setClientAccessToken = (token: string | null) => {
   }
 };
 
+// --- Forbidden Handler ---
+// Registered by AuthContext so the client can trigger logout on 403 responses.
+let forbiddenHandler: (() => void) | null = null;
+
+export const setForbiddenHandler = (handler: () => void) => {
+  forbiddenHandler = handler;
+};
+
 // --- Interceptors ---
 
 // 1. Request Interceptor to add the token to every request
@@ -118,6 +126,14 @@ apiClient.interceptors.response.use(
       } finally {
         isRefreshing = false;
       }
+    }
+
+    // Handle 403 Forbidden - user doesn't have permission (wrong role)
+    if (error.response?.status === 403) {
+      await deleteRefreshToken();
+      setClientAccessToken(null);
+      forbiddenHandler?.();
+      return Promise.reject(error);
     }
 
     return Promise.reject(error);

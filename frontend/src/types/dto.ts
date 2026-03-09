@@ -41,7 +41,8 @@ export interface UserDto {
   name: string;
   email: string;
   role: "STUDENT" | "ADMIN";
-  // Add other user-related fields if they exist in backend UserDto
+  contact?: string;
+  address?: string;
 }
 
 export interface UserListDto {

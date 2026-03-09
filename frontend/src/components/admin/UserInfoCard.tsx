@@ -5,79 +5,47 @@ interface UserInfoCardProps {
   id: string;
   email: string;
   role: string;
+  contact?: string;
+  address?: string;
 }
 
-export default function UserInfoCard({ id, email, role }: UserInfoCardProps) {
+export default function UserInfoCard({ id, email, role, contact, address }: UserInfoCardProps) {
   const theme = useTheme();
+
+  const InfoRow = ({ label, value }: { label: string; value?: string }) => (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingVertical: 8,
+      }}
+    >
+      <Text
+        variant="bodyMedium"
+        style={{ color: theme.colors.onSurfaceVariant }}
+      >
+        {label}
+      </Text>
+      <Text
+        variant="bodyMedium"
+        style={{ fontWeight: "500", color: theme.colors.onSurface }}
+      >
+        {value || "N/A"}
+      </Text>
+    </View>
+  );
 
   return (
     <View style={{ marginHorizontal: 4, marginVertical: 4 }}>
       <Card mode="elevated">
         <Card.Title title="User Information" titleVariant="titleMedium" />
         <Card.Content style={{ paddingTop: 0 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingVertical: 8,
-            }}
-          >
-            <Text
-              variant="bodyMedium"
-              style={{ color: theme.colors.onSurfaceVariant }}
-            >
-              User ID
-            </Text>
-            <Text
-              variant="bodyMedium"
-              style={{ fontWeight: "500", color: theme.colors.onSurface }}
-            >
-              {id}
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingVertical: 8,
-            }}
-          >
-            <Text
-              variant="bodyMedium"
-              style={{ color: theme.colors.onSurfaceVariant }}
-            >
-              Email
-            </Text>
-            <Text
-              variant="bodyMedium"
-              style={{ fontWeight: "500", color: theme.colors.onSurface }}
-            >
-              {email}
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingVertical: 8,
-            }}
-          >
-            <Text
-              variant="bodyMedium"
-              style={{ color: theme.colors.onSurfaceVariant }}
-            >
-              Role
-            </Text>
-            <Text
-              variant="bodyMedium"
-              style={{ fontWeight: "500", color: theme.colors.onSurface }}
-            >
-              {role}
-            </Text>
-          </View>
+          <InfoRow label="User ID" value={id} />
+          <InfoRow label="Email" value={email} />
+          <InfoRow label="Role" value={role} />
+          <InfoRow label="Contact" value={contact} />
+          <InfoRow label="Address" value={address} />
         </Card.Content>
       </Card>
     </View>
