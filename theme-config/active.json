@@ -1,0 +1,36 @@
+{
+  "name": "Holi 2026",
+  "greeting": "Happy Holi! 🎨",
+  "greetingSubtext": "Wishing you a colorful and joyful festival",
+  "greetingIcon": "palette",
+  "light": {
+    "primary": "#E91E63",
+    "onPrimary": "#FFFFFF",
+    "primaryContainer": "#FCE4EC",
+    "onPrimaryContainer": "#880E4F",
+    "secondary": "#9C27B0",
+    "onSecondary": "#FFFFFF",
+    "secondaryContainer": "#F3E5F5",
+    "onSecondaryContainer": "#4A148C",
+    "outline": "#9E6B78",
+    "surface": "#FFF8F9",
+    "onSurface": "#1D1B20",
+    "error": "#B3261E",
+    "onError": "#FFFFFF"
+  },
+  "dark": {
+    "primary": "#F48FB1",
+    "onPrimary": "#880E4F",
+    "primaryContainer": "#AD1457",
+    "onPrimaryContainer": "#FCE4EC",
+    "secondary": "#CE93D8",
+    "onSecondary": "#4A148C",
+    "secondaryContainer": "#6A1B9A",
+    "onSecondaryContainer": "#F3E5F5",
+    "outline": "#C48B9A",
+    "surface": "#1A1216",
+    "onSurface": "#E6E1E5",
+    "error": "#F2B8B5",
+    "onError": "#601410"
+  }
+}
