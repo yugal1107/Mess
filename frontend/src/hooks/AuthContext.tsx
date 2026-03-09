@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import apiClient, { setClientAccessToken } from "../api/client";
+import apiClient, { setClientAccessToken, setForbiddenHandler } from "../api/client";
 import {
   getRefreshToken,
   deleteRefreshToken,
@@ -49,6 +49,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Clear all cached queries to prevent stale data from previous user
     queryClient.clear();
   }, [setToken]);
+
+  // Register logout as the forbidden handler so the client can trigger it on 403
+  useEffect(() => {
+    setForbiddenHandler(logout);
+  }, [logout]);
 
   // Run checkAuthStatus on component mount with cleanup to prevent memory leaks
   useEffect(() => {
