@@ -78,7 +78,11 @@ export default function NotificationsScreen() {
               key={option.label}
               selected={isSelected}
               onPress={() => setActiveFilter(option.value)}
-              style={{ marginRight: 8 }}
+              style={{
+                marginRight: 8,
+                borderWidth: isSelected ? 0 : 1,
+                borderColor: theme.colors.outline,
+              }}
               showSelectedOverlay
             >
               {option.label}

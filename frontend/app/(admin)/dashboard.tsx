@@ -150,28 +150,6 @@ export default function AdminDashboardScreen() {
                 finalized: dinnerFinalized,
               }}
             />
-            <StatCard
-              title="Expected Lunch"
-              count={Math.max(0, (activeUsers?.count ?? 0) - (lunchOffs?.count ?? 0))}
-              icon="food"
-              onPress={() => navigateTo("/(admin)/meal-offs")}
-              loading={loadingActive || loadingLunch}
-              badge={{
-                label: lunchFinalized ? "Confirmed" : "Estimated",
-                finalized: lunchFinalized,
-              }}
-            />
-            <StatCard
-              title="Expected Dinner"
-              count={Math.max(0, (activeUsers?.count ?? 0) - (dinnerOffs?.count ?? 0))}
-              icon="food-variant"
-              onPress={() => navigateTo("/(admin)/meal-offs")}
-              loading={loadingActive || loadingDinner}
-              badge={{
-                label: dinnerFinalized ? "Confirmed" : "Estimated",
-                finalized: dinnerFinalized,
-              }}
-            />
           </View>
         </View>
 

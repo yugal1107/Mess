@@ -301,7 +301,9 @@ export default function AllUsersScreen() {
         onClearIconPress={handleSearchClear}
         style={{
           marginBottom: 12,
-          backgroundColor: theme.colors.surfaceVariant,
+          backgroundColor: theme.colors.surface,
+          borderWidth: 1,
+          borderColor: theme.colors.outline,
         }}
         inputStyle={{ color: theme.colors.onSurface }}
       />

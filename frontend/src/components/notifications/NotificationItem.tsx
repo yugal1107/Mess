@@ -96,6 +96,11 @@ export default function NotificationItem({
         padding: 16,
         flexDirection: "row",
         alignItems: "center",
+        borderWidth: 1,
+        borderColor: !item.isRead
+          ? theme.colors.primary
+          : theme.colors.surfaceVariant,
+        borderLeftWidth: !item.isRead ? 4 : 1,
       }}
     >
       {/* Icon avatar */}
