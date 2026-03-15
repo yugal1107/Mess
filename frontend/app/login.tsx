@@ -11,6 +11,7 @@ export default function LoginScreen() {
   const theme = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -125,12 +126,18 @@ export default function LoginScreen() {
         <TextInput
           label="Password"
           mode="outlined"
-          secureTextEntry
+          secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
           disabled={loading}
           className="mb-4"
           style={{ backgroundColor: theme.colors.surface }}
+          right={
+            <TextInput.Icon
+              icon={showPassword ? "eye-off" : "eye"}
+              onPress={() => setShowPassword(!showPassword)}
+            />
+          }
         />
         <Button
           mode="contained"
