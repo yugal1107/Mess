@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { PaperProvider } from "react-native-paper";
-import { theme } from "../src/theme/theme";
 import { AuthProvider } from "../src/hooks/AuthContext";
+import { ThemeProvider, useAppTheme } from "../src/hooks/ThemeContext";
 import "../src/styles/globals.css"; // Import global CSS
 import "../src/nativewind-config"; // Import NativeWind config for RNP
 import {
@@ -17,6 +17,25 @@ import { queryClient } from "../src/config/queryClient";
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
+
+// Inner component so it can consume ThemeContext
+function AppProviders() {
+  const { appTheme } = useAppTheme();
+
+  return (
+    <PaperProvider theme={appTheme}>
+      <AuthProvider>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+          <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen name="signup" options={{ headerShown: false }} />
+        </Stack>
+      </AuthProvider>
+    </PaperProvider>
+  );
+}
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -37,17 +56,9 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <PaperProvider theme={theme}>
-        <AuthProvider>
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-            <Stack.Screen name="login" options={{ headerShown: false }} />
-            <Stack.Screen name="signup" options={{ headerShown: false }} />
-          </Stack>
-        </AuthProvider>
-      </PaperProvider>
+      <ThemeProvider>
+        <AppProviders />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

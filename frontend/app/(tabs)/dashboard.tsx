@@ -13,6 +13,7 @@ import NoSubscriptionCard from "@/src/components/tabs/NoSubscriptionCard";
 import Loading from "@/src/components/common/Loading";
 import MealMenu from "@/src/components/tabs/MealMenu";
 import Container from "@/src/components/common/Container";
+import FestivalGreeting from "@/src/components/common/FestivalGreeting";
 
 const { width } = Dimensions.get("window");
 const isSmallDevice = width < 375;
@@ -35,8 +36,9 @@ export default function DashboardScreen() {
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 16 }}
+        contentContainerStyle={{ paddingHorizontal: 16, paddingTop:25 }}
       >
+
         {/* Welcome Section */}
         <View style={{ marginBottom: isSmallDevice ? 16 : 24 }}>
           <Text
@@ -59,8 +61,11 @@ export default function DashboardScreen() {
           </Text>
         </View>
 
+        {/* Festival Greeting */}
+        <FestivalGreeting />
+
         {/* Subscription Section */}
-        <View style={{ marginBottom: isSmallDevice ? 12 : 16 }}>
+        <View style={{ marginBottom: isSmallDevice ? 12 : 16, marginTop: 10 }}>
           <Text
             variant="titleLarge"
             style={{

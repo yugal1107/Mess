@@ -6,6 +6,7 @@ import { useUsers } from "../../src/hooks/useUsers";
 import { useAllLunchOffs, useAllDinnerOffs } from "../../src/hooks/useMealOff";
 import { StatCard } from "../../src/components/admin";
 import Container from "../../src/components/common/Container";
+import FestivalGreeting from "../../src/components/common/FestivalGreeting";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const { width } = Dimensions.get("window");
@@ -51,6 +52,9 @@ export default function AdminDashboardScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
       >
+        {/* Festival Greeting */}
+        <FestivalGreeting />
+
         {/* Welcome Section */}
         <View style={{ marginBottom: isSmallDevice ? 20 : 28 }}>
           <Text

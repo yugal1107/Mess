@@ -115,6 +115,32 @@ export interface SuccessResponseDto {
   message: string;
 }
 
+// --- Theme DTOs ---
+export interface ThemeColorsDto {
+  primary?: string;
+  onPrimary?: string;
+  primaryContainer?: string;
+  onPrimaryContainer?: string;
+  secondary?: string;
+  onSecondary?: string;
+  secondaryContainer?: string;
+  onSecondaryContainer?: string;
+  outline?: string;
+  surface?: string;
+  onSurface?: string;
+  error?: string;
+  onError?: string;
+}
+
+export interface ThemeDto {
+  name: string;
+  greeting: string;
+  greetingSubtext?: string;
+  greetingIcon?: string;
+  light: ThemeColorsDto;
+  dark: ThemeColorsDto;
+}
+
 // --- Notification DTOs ---
 export type NotificationType =
   | "SUBSCRIPTION_EXPIRY"
