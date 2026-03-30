@@ -156,3 +156,8 @@ export interface NotificationDto {
   isRead: boolean;
   timestamp: string; // LocalDateTime from backend
 }
+
+export interface AnnouncementDto {
+  message: string;
+  notifyAllUsers: boolean;
+}

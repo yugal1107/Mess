@@ -101,6 +101,13 @@ export default function AdminLayout() {
           headerShown: false,
         }}
       />
+      <Tabs.Screen
+        name="announcement"
+        options={{
+          href: null,
+          headerShown: false,
+        }}
+      />
     </Tabs>
   );
 }

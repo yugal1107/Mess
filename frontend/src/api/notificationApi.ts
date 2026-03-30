@@ -1,5 +1,5 @@
 import apiClient from "./client";
-import { NotificationDto, NotificationType } from "../types/dto";
+import { NotificationDto, NotificationType, AnnouncementDto } from "../types/dto";
 
 export const fetchNotifications = async (
   type?: NotificationType
@@ -8,4 +8,9 @@ export const fetchNotifications = async (
     params: type ? { type } : undefined,
   });
   return response.data.data;
+};
+
+export const createAnnouncement = async (dto: AnnouncementDto) => {
+  const response = await apiClient.post("/notification/announcement", dto);
+  return response.data;
 };
