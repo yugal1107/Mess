@@ -7,7 +7,7 @@ export const fontConfig = {
       ios: 'System',
       default: 'sans-serif',
     }),
-    fontWeight: '400',
+    fontWeight: '400' as const,
     letterSpacing: 0.5,
     lineHeight: 22,
     fontSize: 20,

@@ -1,5 +1,5 @@
 import { View, ScrollView, StyleSheet, Dimensions } from "react-native";
-import { Text, useTheme, Button } from "react-native-paper";
+import { Text, useTheme, Button, IconButton } from "react-native-paper";
 import { useAuth } from "../../src/hooks/AuthContext";
 import { useRouter, Href } from "expo-router";
 import { useUsers } from "../../src/hooks/useUsers";
@@ -56,41 +56,52 @@ export default function AdminDashboardScreen() {
         <FestivalGreeting />
 
         {/* Welcome Section */}
-        <View style={{ marginBottom: isSmallDevice ? 20 : 28 }}>
-          <Text
-            variant="headlineSmall"
-            style={{ color: theme.colors.onSurfaceVariant, marginBottom: 4 }}
-          >
-            Welcome back,
-          </Text>
-          <Text
-            variant="headlineLarge"
-            style={{ color: theme.colors.primary, fontWeight: "700" }}
-          >
-            {user.name}
-          </Text>
-          <View
-            style={[
-              styles.adminBadge,
-              { backgroundColor: theme.colors.tertiaryContainer },
-            ]}
-          >
-            <MaterialCommunityIcons
-              name="shield-account"
-              size={16}
-              color={theme.colors.onTertiaryContainer}
-            />
+        <View style={[styles.welcomeSection, { marginBottom: isSmallDevice ? 20 : 28 }]}>
+          <View style={{ flex: 1 }}>
             <Text
-              variant="labelLarge"
-              style={{
-                color: theme.colors.onTertiaryContainer,
-                marginLeft: 6,
-                fontWeight: "600",
-              }}
+              variant="headlineSmall"
+              style={{ color: theme.colors.onSurfaceVariant, marginBottom: 4 }}
             >
-              Administrator
+              Welcome back,
             </Text>
+            <Text
+              variant="headlineLarge"
+              style={{ color: theme.colors.primary, fontWeight: "700" }}
+            >
+              {user.name}
+            </Text>
+            <View
+              style={[
+                styles.adminBadge,
+                { backgroundColor: theme.colors.tertiaryContainer },
+              ]}
+            >
+              <MaterialCommunityIcons
+                name="shield-account"
+                size={16}
+                color={theme.colors.onTertiaryContainer}
+              />
+              <Text
+                variant="labelLarge"
+                style={{
+                  color: theme.colors.onTertiaryContainer,
+                  marginLeft: 6,
+                  fontWeight: "600",
+                }}
+              >
+                Administrator
+              </Text>
+            </View>
           </View>
+          <IconButton
+            icon="bullhorn"
+            mode="contained"
+            size={28}
+            iconColor={theme.colors.onPrimary}
+            containerColor={theme.colors.primary}
+            onPress={() => navigateTo("/(admin)/announcement")}
+            style={{ width: 48, height: 48 }}
+          />
         </View>
 
         {/* Statistics Section */}
@@ -181,6 +192,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
+  },
+  welcomeSection: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
   },
   statsGrid: {
     flexDirection: "row",

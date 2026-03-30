@@ -1,7 +1,7 @@
 import { ThemeDto } from "../types/dto";
 
 const THEME_CONFIG_URL =
-  "https://raw.githubusercontent.com/yugal1107/Mess/dev/theme-config/active.json";
+  "https://raw.githubusercontent.com/yugal1107/Mess/main/theme-config/active.json";
 
 // Cache duration: 10 minutes (in ms)
 const CACHE_DURATION = 10 * 60 * 1000;
