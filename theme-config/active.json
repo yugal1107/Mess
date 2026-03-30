@@ -2,7 +2,7 @@
   "name": "Indian Summer 2026",
   "greeting": "Hello Summer! ☀️",
   "greetingSubtext": "Embrace the warmth and golden vibes of the season",
-  "greetingIcon": "wb_sunny",
+  "greetingIcon": "ice-cream",
   "light": {
     "primary": "#F57F17",
     "onPrimary": "#FFFFFF",
@@ -15,6 +15,7 @@
     "outline": "#A68A5B",
     "surface": "#FFFDF5",
     "onSurface": "#1C1B1A",
+    "surfaceVariant": "#EEE1C5",
     "error": "#B3261E",
     "onError": "#FFFFFF"
   },
@@ -30,6 +31,7 @@
     "outline": "#C9A84C",
     "surface": "#1A1508",
     "onSurface": "#F5ECD8",
+    "surfaceVariant": "#302A20",
     "error": "#F2B8B5",
     "onError": "#601410"
   }
