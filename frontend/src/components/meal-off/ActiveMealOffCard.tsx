@@ -11,7 +11,6 @@ interface ActiveMealOffCardProps {
   startMeal: MealType | null;
   endMeal: MealType | null;
   isCancelling: boolean;
-  onEdit: () => void;
   onCancel: () => void;
 }
 
@@ -21,7 +20,6 @@ export default function ActiveMealOffCard({
   startMeal,
   endMeal,
   isCancelling,
-  onEdit,
   onCancel,
 }: ActiveMealOffCardProps) {
   const theme = useTheme();
@@ -141,14 +139,7 @@ export default function ActiveMealOffCard({
 
         <Divider className="mb-2" />
 
-        <View className="flex-row justify-end pt-2 gap-2">
-          <Button
-            mode="contained"
-            onPress={onEdit}
-            icon="pencil"
-          >
-            Edit
-          </Button>
+        <View className="pt-2">
           <Button
             mode="contained"
             onPress={onCancel}

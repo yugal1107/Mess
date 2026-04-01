@@ -44,7 +44,6 @@ export default function CustomRangeMealCard({
     setIsEditing(false);
   };
 
-  // Get initial form data from current meal off
   const getInitialFormData = (): MealOffFormData | undefined => {
     if (!hasActiveMealOff) return undefined;
     return {
@@ -56,7 +55,7 @@ export default function CustomRangeMealCard({
   };
 
   // Show active meal-off details
-  if (hasActiveMealOff && !isEditing) {
+  if (hasActiveMealOff) {
     return (
       <ActiveMealOffCard
         startDate={currentMealOff.startDate!}
@@ -64,24 +63,23 @@ export default function CustomRangeMealCard({
         startMeal={currentMealOff.startMeal}
         endMeal={currentMealOff.endMeal}
         isCancelling={isCancelling}
-        onEdit={handleStartEdit}
         onCancel={onCancel}
       />
     );
   }
 
-  // Show empty state
+  // Show empty state or create form
   if (!isEditing) {
     return <EmptyMealOffCard onSetMealOff={handleStartEdit} />;
   }
 
-  // Show edit/create form
+  // Show create form
   return (
     <MealOffForm
-      title={hasActiveMealOff ? "Edit Meal Off" : "Set Custom Meal Off"}
+      title="Set Custom Meal Off"
       initialData={getInitialFormData()}
       isLoading={isLoading}
-      submitLabel={hasActiveMealOff ? "Update" : "Submit"}
+      submitLabel="Submit"
       onSubmit={handleSubmit}
       onCancel={handleCancelEdit}
     />
