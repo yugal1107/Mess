@@ -242,7 +242,7 @@ export default function AllUsersScreen() {
   const searchQuery = useSearchUsers(submittedQuery);
 
   const activeQuery = isSearchMode ? searchQuery : filterQuery;
-  const { data, isLoading, isError, error, refetch } = activeQuery;
+  const { data, isLoading, isError, error, refetch, isFetching } = activeQuery;
 
   // --- Handlers ---
   const handleUserPress = (userId: string) => {
@@ -377,6 +377,8 @@ export default function AllUsersScreen() {
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ paddingBottom: 20 }}
+        onRefresh={refetch}
+        refreshing={isFetching}
         renderItem={({ item, index }) => (
           <UserListItem
             id={item.id}

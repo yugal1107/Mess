@@ -1,4 +1,4 @@
-import { ScrollView, View, Dimensions } from "react-native";
+import { ScrollView, View, Dimensions, RefreshControl } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { useState } from "react";
 import { useAuth } from "@/src/hooks/AuthContext";
@@ -23,7 +23,7 @@ export default function DashboardScreen() {
   const [subscriptionType, setSubscriptionType] = useState<
     "MESS" | "HOME_DELIVERY"
   >("MESS");
-  const { data: subscription, isLoading } = useSubscription();
+  const { data: subscription, isLoading, isFetching, refetch } = useSubscription();
   const { mutate: requestSubscription, isPending } = useRequestSubscription();
   const theme = useTheme();
 
@@ -37,6 +37,13 @@ export default function DashboardScreen() {
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 16, paddingTop:25 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={refetch}
+            colors={[theme.colors.primary]}
+          />
+        }
       >
 
         {/* Welcome Section */}

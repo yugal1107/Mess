@@ -1,17 +1,35 @@
-import { View } from "react-native";
+import { View, ScrollView, RefreshControl } from "react-native";
 import { Text, Button, Avatar, Card, useTheme } from "react-native-paper";
+import { useState } from "react";
 import { useAuth } from "../../src/hooks/AuthContext";
 import { useRouter } from "expo-router";
+import apiClient from "@/src/api/client";
+import { ApiResponse } from "@/src/types/dto";
 import Container from "@/src/components/common/Container";
 
 export default function ProfileScreen() {
   const theme = useTheme();
-  const { user, logout } = useAuth();
+  const { user, logout, setUser } = useAuth();
   const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleLogout = () => {
     logout();
     router.replace("/login");
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const response = await apiClient.get<ApiResponse<typeof user>>("/user");
+      if (response.data.data) {
+        setUser(response.data.data);
+      }
+    } catch (error) {
+      console.error("Failed to refresh profile:", error);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   if (!user) {
@@ -20,7 +38,17 @@ export default function ProfileScreen() {
 
   return (
     <Container edges={["top"]} className="px-2.5 pt-5" heading="Profile">
-      <View className="flex-1 items-center pt-10 px-5">
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[theme.colors.primary]}
+          />
+        }
+      >
+        <View className="flex-1 items-center pt-10 px-5">
         <Avatar.Text
           size={80}
           label={user.name?.[0]?.toUpperCase() || "?"}
@@ -63,6 +91,7 @@ export default function ProfileScreen() {
           Logout
         </Button>
       </View>
+      </ScrollView>
     </Container>
   );
 }
