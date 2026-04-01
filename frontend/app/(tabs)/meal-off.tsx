@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ScrollView } from "react-native";
 import { Snackbar } from "react-native-paper";
 import { AxiosError, AxiosResponse } from "axios";
 import { ApiResponse, TodayMealOffDto } from "../../src/types/dto";
@@ -135,20 +136,25 @@ export default function MealOffScreen() {
 
   return (
     <Container className="px-2.5 pt-5" edges={["top"]} heading="Meal Off">
-      <TodayMealCard
-        lunchOff={todayMealOff?.lunch || false}
-        dinnerOff={todayMealOff?.dinner || false}
-        isToggling={isToggling}
-        onToggle={handleToggle}
-      />
+      <ScrollView 
+        contentContainerStyle={{ paddingBottom: 24 }} 
+        showsVerticalScrollIndicator={false}
+      >
+        <TodayMealCard
+          lunchOff={todayMealOff?.lunch || false}
+          dinnerOff={todayMealOff?.dinner || false}
+          isToggling={isToggling}
+          onToggle={handleToggle}
+        />
 
-      <CustomRangeMealCard
-        currentMealOff={customMealOff || null}
-        isLoading={isSettingCustom}
-        isCancelling={isCancellingCustom}
-        onSubmit={handleCustomSubmit}
-        onCancel={handleCancelCustom}
-      />
+        <CustomRangeMealCard
+          currentMealOff={customMealOff || null}
+          isLoading={isSettingCustom}
+          isCancelling={isCancellingCustom}
+          onSubmit={handleCustomSubmit}
+          onCancel={handleCancelCustom}
+        />
+      </ScrollView>
 
       <Snackbar
         visible={snackbarVisible}

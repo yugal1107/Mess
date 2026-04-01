@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { Text, Button, TextInput, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -44,62 +44,72 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <View
-      className="flex-1 justify-center p-5"
+    <KeyboardAvoidingView
+      className="flex-1"
+      behavior="padding"
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
       style={{ backgroundColor: theme.colors.surface }}
     >
-      <Text variant="displayMedium" className="mb-2">
-        Forgot Password
-      </Text>
-      <Text
-        variant="bodyMedium"
-        className="mb-8"
-        style={{ color: theme.colors.onSurfaceVariant }}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 20, paddingBottom: 60 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        Enter your registered email address and we&apos;ll send you an OTP to
-        reset your password.
-      </Text>
+        <View>
+          <Text variant="displayMedium" className="mb-2">
+            Forgot Password
+          </Text>
+          <Text
+            variant="bodyMedium"
+            className="mb-8"
+            style={{ color: theme.colors.onSurfaceVariant }}
+          >
+            Enter your registered email address and we&apos;ll send you an OTP to
+            reset your password.
+          </Text>
 
-      {!!error && (
-        <Text
-          className="text-center mb-4 text-sm"
-          style={{ color: theme.colors.error }}
-        >
-          {error}
-        </Text>
-      )}
+          {!!error && (
+            <Text
+              className="text-center mb-4 text-sm"
+              style={{ color: theme.colors.error }}
+            >
+              {error}
+            </Text>
+          )}
 
-      <TextInput
-        label="Email"
-        mode="outlined"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoComplete="email"
-        value={email}
-        onChangeText={setEmail}
-        disabled={isPending}
-        className="mb-4"
-        style={{ backgroundColor: theme.colors.surface }}
-      />
+          <TextInput
+            label="Email"
+            mode="outlined"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            value={email}
+            onChangeText={setEmail}
+            disabled={isPending}
+            className="mb-4"
+            style={{ backgroundColor: theme.colors.surface }}
+          />
 
-      <Button
-        mode="contained"
-        onPress={handleSubmit}
-        loading={isPending}
-        disabled={isPending}
-        className="mt-2"
-      >
-        Send OTP
-      </Button>
+          <Button
+            mode="contained"
+            onPress={handleSubmit}
+            loading={isPending}
+            disabled={isPending}
+            className="mt-2"
+          >
+            Send OTP
+          </Button>
 
-      <Button
-        mode="text"
-        onPress={() => router.back()}
-        disabled={isPending}
-        className="mt-2"
-      >
-        Back to Login
-      </Button>
-    </View>
+          <Button
+            mode="text"
+            onPress={() => router.back()}
+            disabled={isPending}
+            className="mt-2"
+          >
+            Back to Login
+          </Button>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
