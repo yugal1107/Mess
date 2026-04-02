@@ -18,12 +18,18 @@ export default function SignUpScreen() {
   const router = useRouter();
 
   const handleSignUp = async () => {
-    if (!name || !email || !password || !confirmPassword || !contact || !address) {
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedContact = contact.trim();
+    const trimmedAddress = address.trim();
+    const trimmedConfirmPassword = confirmPassword.trim();
+
+    if (!trimmedName || !trimmedEmail || !password || !trimmedConfirmPassword || !trimmedContact || !trimmedAddress) {
       setError("All fields are required.");
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(trimmedEmail)) {
       setError("Please enter a valid email address.");
       return;
     }
@@ -31,7 +37,7 @@ export default function SignUpScreen() {
       setError("Password must be at least 6 characters.");
       return;
     }
-    if (password !== confirmPassword) {
+    if (password !== trimmedConfirmPassword) {
       setError("Passwords do not match.");
       return;
     }
@@ -40,11 +46,11 @@ export default function SignUpScreen() {
     setError("");
     try {
       await apiClient.post("/auth/signup", {
-        name,
-        email,
+        name: trimmedName,
+        email: trimmedEmail,
         password,
-        contact,
-        address,
+        contact: trimmedContact,
+        address: trimmedAddress,
         role: "STUDENT",
       });
       router.replace({
