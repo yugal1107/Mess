@@ -99,7 +99,10 @@ apiClient.interceptors.response.use(
 
       const refreshToken = await getRefreshToken();
       if (!refreshToken) {
-        // No refresh token, reset flag and reject
+        // No refresh token: clear auth state, process queue with error, and reject
+        await deleteRefreshToken();
+        setClientAccessToken(null);
+        processQueue(error, null);
         isRefreshing = false;
         return Promise.reject(error);
       }
