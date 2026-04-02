@@ -1,9 +1,10 @@
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { Text, Button, TextInput, useTheme } from "react-native-paper";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useForgotPassword } from "../src/hooks/useAuth";
 import { getErrorMessage } from "../src/utils/errorHelper";
+import AuthFormContainer from "../src/components/common/AuthFormContainer";
 
 export default function ForgotPasswordScreen() {
   const theme = useTheme();
@@ -44,17 +45,7 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1"
-      behavior="padding"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
-      style={{ backgroundColor: theme.colors.surface }}
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 20, paddingBottom: 60 }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+    <AuthFormContainer contentContainerStyle={{ paddingBottom: 60 }}>
         <View>
           <Text variant="displayMedium" className="mb-2">
             Forgot Password
@@ -109,7 +100,6 @@ export default function ForgotPasswordScreen() {
             Back to Login
           </Button>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </AuthFormContainer>
   );
 }

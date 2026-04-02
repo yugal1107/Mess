@@ -1,8 +1,9 @@
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { Text, Button, TextInput, useTheme } from "react-native-paper";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import apiClient from "../src/api/client";
+import AuthFormContainer from "../src/components/common/AuthFormContainer";
 
 export default function SignUpScreen() {
   const theme = useTheme();
@@ -59,17 +60,7 @@ export default function SignUpScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1"
-      behavior="padding"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 24}
-      style={{ backgroundColor: theme.colors.surface }}
-    >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, justifyContent: "center", padding: 20 }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
+    <AuthFormContainer>
         <View>
           <Text
             variant="displayMedium"
@@ -160,7 +151,6 @@ export default function SignUpScreen() {
             </Button>
           </Link>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </AuthFormContainer>
   );
 }
