@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import { useForgotPassword } from "../src/hooks/useAuth";
 import { getErrorMessage } from "../src/utils/errorHelper";
+import AuthFormContainer from "../src/components/common/AuthFormContainer";
 
 export default function ForgotPasswordScreen() {
   const theme = useTheme();
@@ -44,62 +45,61 @@ export default function ForgotPasswordScreen() {
   };
 
   return (
-    <View
-      className="flex-1 justify-center p-5"
-      style={{ backgroundColor: theme.colors.surface }}
-    >
-      <Text variant="displayMedium" className="mb-2">
-        Forgot Password
-      </Text>
-      <Text
-        variant="bodyMedium"
-        className="mb-8"
-        style={{ color: theme.colors.onSurfaceVariant }}
-      >
-        Enter your registered email address and we&apos;ll send you an OTP to
-        reset your password.
-      </Text>
+    <AuthFormContainer contentContainerStyle={{ paddingBottom: 60 }}>
+        <View>
+          <Text variant="displayMedium" className="mb-2">
+            Forgot Password
+          </Text>
+          <Text
+            variant="bodyMedium"
+            className="mb-8"
+            style={{ color: theme.colors.onSurfaceVariant }}
+          >
+            Enter your registered email address and we&apos;ll send you an OTP to
+            reset your password.
+          </Text>
 
-      {!!error && (
-        <Text
-          className="text-center mb-4 text-sm"
-          style={{ color: theme.colors.error }}
-        >
-          {error}
-        </Text>
-      )}
+          {!!error && (
+            <Text
+              className="text-center mb-4 text-sm"
+              style={{ color: theme.colors.error }}
+            >
+              {error}
+            </Text>
+          )}
 
-      <TextInput
-        label="Email"
-        mode="outlined"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoComplete="email"
-        value={email}
-        onChangeText={setEmail}
-        disabled={isPending}
-        className="mb-4"
-        style={{ backgroundColor: theme.colors.surface }}
-      />
+          <TextInput
+            label="Email"
+            mode="outlined"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            autoComplete="email"
+            value={email}
+            onChangeText={setEmail}
+            disabled={isPending}
+            className="mb-4"
+            style={{ backgroundColor: theme.colors.surface }}
+          />
 
-      <Button
-        mode="contained"
-        onPress={handleSubmit}
-        loading={isPending}
-        disabled={isPending}
-        className="mt-2"
-      >
-        Send OTP
-      </Button>
+          <Button
+            mode="contained"
+            onPress={handleSubmit}
+            loading={isPending}
+            disabled={isPending}
+            className="mt-2"
+          >
+            Send OTP
+          </Button>
 
-      <Button
-        mode="text"
-        onPress={() => router.back()}
-        disabled={isPending}
-        className="mt-2"
-      >
-        Back to Login
-      </Button>
-    </View>
+          <Button
+            mode="text"
+            onPress={() => router.back()}
+            disabled={isPending}
+            className="mt-2"
+          >
+            Back to Login
+          </Button>
+        </View>
+    </AuthFormContainer>
   );
 }

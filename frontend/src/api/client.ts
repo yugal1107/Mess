@@ -71,6 +71,13 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Skip token refresh for auth endpoints (login, refresh, signup)
+    // These endpoints returning 401 means "invalid credentials" or "invalid refresh token"
+    // NOT "access token expired"
+    if (originalRequest.url?.includes("/auth/")) {
+      return Promise.reject(error);
+    }
+
     // Check if the error is a 401 and we haven't already tried to refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
@@ -92,8 +99,11 @@ apiClient.interceptors.response.use(
 
       const refreshToken = await getRefreshToken();
       if (!refreshToken) {
-        // No refresh token, logout user
-        // This part will be handled by navigating to login in the UI
+        // No refresh token: clear auth state, process queue with error, and reject
+        await deleteRefreshToken();
+        setClientAccessToken(null);
+        processQueue(error, null);
+        isRefreshing = false;
         return Promise.reject(error);
       }
 

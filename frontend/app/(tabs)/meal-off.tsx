@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Snackbar } from "react-native-paper";
+import { ScrollView, RefreshControl } from "react-native";
+import { Snackbar, useTheme } from "react-native-paper";
 import { AxiosError, AxiosResponse } from "axios";
 import { ApiResponse, TodayMealOffDto } from "../../src/types/dto";
 import {
@@ -20,6 +21,7 @@ import EmptyState from "@/src/components/common/EmptyState";
 import ErrorScreen from "@/src/components/common/ErrorScreen";
 
 export default function MealOffScreen() {
+  const theme = useTheme();
   // --- UI State ---
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -28,12 +30,14 @@ export default function MealOffScreen() {
   const {
     data: todayMealOff,
     isLoading: isLoadingToday,
+    isFetching: isFetchingToday,
     error: todayError,
     refetch: refetchToday,
   } = useTodayMealOff();
   const {
     data: customMealOff,
     isLoading: isLoadingCustom,
+    isFetching: isFetchingCustom,
     error: customError,
     refetch: refetchCustom,
   } = useCustomMealOff();
@@ -44,6 +48,7 @@ export default function MealOffScreen() {
     useCancelCustomMealOff();
 
   const isLoading = isLoadingToday || isLoadingCustom;
+  const isRefreshing = isFetchingToday || isFetchingCustom;
 
   const showSnackbar = (message: string) => {
     setSnackbarMessage(message);
@@ -135,20 +140,32 @@ export default function MealOffScreen() {
 
   return (
     <Container className="px-2.5 pt-5" edges={["top"]} heading="Meal Off">
-      <TodayMealCard
-        lunchOff={todayMealOff?.lunch || false}
-        dinnerOff={todayMealOff?.dinner || false}
-        isToggling={isToggling}
-        onToggle={handleToggle}
-      />
+      <ScrollView 
+        contentContainerStyle={{ paddingBottom: 24 }} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRetry}
+            colors={[theme.colors.primary]}
+          />
+        }
+      >
+        <TodayMealCard
+          lunchOff={todayMealOff?.lunch || false}
+          dinnerOff={todayMealOff?.dinner || false}
+          isToggling={isToggling}
+          onToggle={handleToggle}
+        />
 
-      <CustomRangeMealCard
-        currentMealOff={customMealOff || null}
-        isLoading={isSettingCustom}
-        isCancelling={isCancellingCustom}
-        onSubmit={handleCustomSubmit}
-        onCancel={handleCancelCustom}
-      />
+        <CustomRangeMealCard
+          currentMealOff={customMealOff || null}
+          isLoading={isSettingCustom}
+          isCancelling={isCancellingCustom}
+          onSubmit={handleCustomSubmit}
+          onCancel={handleCancelCustom}
+        />
+      </ScrollView>
 
       <Snackbar
         visible={snackbarVisible}

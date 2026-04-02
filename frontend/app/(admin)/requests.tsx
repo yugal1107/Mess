@@ -9,7 +9,7 @@ import EmptyState from "../../src/components/common/EmptyState";
 import ErrorScreen from "../../src/components/common/ErrorScreen";
 
 export default function SubscriptionRequestsScreen() {
-  const { data, isLoading, isError, error, refetch } =
+  const { data, isLoading, isError, error, refetch, isFetching } =
     useSubscriptionRequests();
 
   const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
@@ -43,6 +43,8 @@ export default function SubscriptionRequestsScreen() {
       <FlatList
         data={data?.userList}
         keyExtractor={(item) => item.id}
+        onRefresh={refetch}
+        refreshing={isFetching}
         renderItem={({ item }) => (
           <RequestCard
             id={item.id}
