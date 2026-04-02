@@ -44,16 +44,6 @@ export default function CustomRangeMealCard({
     setIsEditing(false);
   };
 
-  const getInitialFormData = (): MealOffFormData | undefined => {
-    if (!hasActiveMealOff) return undefined;
-    return {
-      startDate: new Date(currentMealOff.startDate!),
-      endDate: new Date(currentMealOff.endDate!),
-      startMeal: currentMealOff.startMeal || "LUNCH",
-      endMeal: currentMealOff.endMeal || "DINNER",
-    };
-  };
-
   // Show active meal-off details
   if (hasActiveMealOff) {
     return (
@@ -77,7 +67,6 @@ export default function CustomRangeMealCard({
   return (
     <MealOffForm
       title="Set Custom Meal Off"
-      initialData={getInitialFormData()}
       isLoading={isLoading}
       submitLabel="Submit"
       onSubmit={handleSubmit}
