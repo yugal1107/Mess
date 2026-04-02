@@ -20,6 +20,19 @@ interface CustomRangeMealCardProps {
   onCancel: () => void;
 }
 
+/**
+ * Renders a card that displays an active custom-range meal-off, an empty state, or a form to create one.
+ *
+ * When `currentMealOff` contains both `startDate` and `endDate`, the active meal-off view is shown.
+ * Otherwise it shows an empty state that can open the creation form; while editing the creation form is shown.
+ *
+ * @param currentMealOff - Current custom meal-off range or `null` if none; `startDate`/`endDate` are ISO date strings or `null`.
+ * @param isLoading - Whether the form submit action is in progress.
+ * @param isCancelling - Whether an active meal-off cancellation is in progress.
+ * @param onSubmit - Called with form data when the user submits the create form.
+ * @param onCancel - Called when the user cancels an active meal-off.
+ * @returns A React element showing either the active meal-off, the empty state, or the meal-off creation form.
+ */
 export default function CustomRangeMealCard({
   currentMealOff,
   isLoading,

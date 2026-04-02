@@ -5,6 +5,14 @@ import { useState } from "react";
 import { useVerifyOtp } from "../src/hooks/useAuth";
 import { getErrorMessage } from "../src/utils/errorHelper";
 
+/**
+ * Displays a screen for entering and verifying a 6-digit OTP associated with a password reset token.
+ *
+ * Validates the OTP input, invokes the verify mutation, navigates to the reset-password screen on success,
+ * and redirects to the forgot-password screen when the required reset token is missing.
+ *
+ * @returns The Verify OTP screen UI as a React element.
+ */
 export default function VerifyOtpScreen() {
   const theme = useTheme();
   const router = useRouter();

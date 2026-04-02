@@ -5,6 +5,13 @@ import { useState } from "react";
 import { useForgotPassword } from "../src/hooks/useAuth";
 import { getErrorMessage } from "../src/utils/errorHelper";
 
+/**
+ * Renders a "Forgot Password" screen with an email input, error display, and actions to send an OTP or return to login.
+ *
+ * Validates the entered email, calls the forgot-password mutation to request an OTP, sets user-facing error messages on failure, and navigates to "/verify-otp" with the `resetToken` and normalized email on success.
+ *
+ * @returns The React element for the forgot-password screen.
+ */
 export default function ForgotPasswordScreen() {
   const theme = useTheme();
   const router = useRouter();

@@ -7,6 +7,13 @@ import apiClient from "@/src/api/client";
 import { ApiResponse } from "@/src/types/dto";
 import Container from "@/src/components/common/Container";
 
+/**
+ * Renders the authenticated user's profile screen with pull-to-refresh and logout.
+ *
+ * Displays the user's avatar initial, name, email, role, contact, and address; provides a pull-to-refresh control to reload profile data and a logout button that navigates to the login screen.
+ *
+ * @returns The profile screen React element, or `null` when there is no authenticated user.
+ */
 export default function ProfileScreen() {
   const theme = useTheme();
   const { user, logout, setUser } = useAuth();

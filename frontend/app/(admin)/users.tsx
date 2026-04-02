@@ -218,7 +218,13 @@ function Dropdown<T extends string>({
   );
 }
 
-// --- Main Screen ---
+/**
+ * Displays a searchable, filterable user list screen with loading, error, and pull-to-refresh states.
+ *
+ * Shows a search bar, status and type filters, result count, and a list of users; tapping a user navigates to its detail screen.
+ *
+ * @returns The React element for the All Users screen
+ */
 export default function AllUsersScreen() {
   const theme = useTheme();
   const router = useRouter();

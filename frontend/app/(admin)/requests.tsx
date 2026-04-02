@@ -8,6 +8,14 @@ import Loading from "../../src/components/common/Loading";
 import EmptyState from "../../src/components/common/EmptyState";
 import ErrorScreen from "../../src/components/common/ErrorScreen";
 
+/**
+ * Renders a screen that lists pending subscription requests and provides per-request approval controls.
+ *
+ * Shows a full-screen loading indicator while requests are loading, an error screen with retry on error, and a list of request cards otherwise.
+ * The list supports pull-to-refresh and displays an empty state when there are no pending requests. Approving a request triggers the accept mutation and shows a per-item loading indicator until the mutation settles.
+ *
+ * @returns The React element for the subscription requests screen, including loading, error, list, and empty states.
+ */
 export default function SubscriptionRequestsScreen() {
   const { data, isLoading, isError, error, refetch, isFetching } =
     useSubscriptionRequests();

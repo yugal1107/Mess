@@ -20,6 +20,19 @@ import Container from "@/src/components/common/Container";
 import EmptyState from "@/src/components/common/EmptyState";
 import ErrorScreen from "@/src/components/common/ErrorScreen";
 
+/**
+ * Render the Meal Off screen for viewing and managing today's and custom meal-off periods.
+ *
+ * Fetches today's meal-off and any custom meal-off range, displays loading and error states
+ * (including a special "not subscribed" empty state), and provides UI to:
+ * - toggle lunch or dinner off for today,
+ * - create a custom meal-off date range,
+ * - cancel an existing custom range.
+ *
+ * The screen supports pull-to-refresh and shows user feedback via a snackbar.
+ *
+ * @returns The JSX element for the Meal Off screen.
+ */
 export default function MealOffScreen() {
   const theme = useTheme();
   // --- UI State ---

@@ -14,6 +14,17 @@ interface ActiveMealOffCardProps {
   onCancel: () => void;
 }
 
+/**
+ * Render a themed "Active Meal Off" card that displays a start date/meal, an end date/meal, and a Cancel action.
+ *
+ * @param startDate - ISO or parseable date string for the start of the meal-off range; shown via `formatDate`
+ * @param endDate - ISO or parseable date string for the end of the meal-off range; shown via `formatDate`
+ * @param startMeal - `"LUNCH" | "DINNER" | null`; when provided the value is displayed lowercased next to the start date
+ * @param endMeal - `"LUNCH" | "DINNER" | null`; when provided the value is displayed lowercased next to the end date
+ * @param isCancelling - When `true`, the Cancel button is disabled and shows a loading state
+ * @param onCancel - Callback invoked when the Cancel button is pressed
+ * @returns The rendered Active Meal Off card React element
+ */
 export default function ActiveMealOffCard({
   startDate,
   endDate,

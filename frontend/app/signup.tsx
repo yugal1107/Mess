@@ -4,6 +4,13 @@ import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import apiClient from "../src/api/client";
 
+/**
+ * Renders the Sign Up screen and manages user registration flow.
+ *
+ * Shows inputs for name, email, password, confirm password, contact, and address; performs client-side validation, displays validation or server errors, submits registration to the backend, and navigates to the login screen on success.
+ *
+ * @returns The rendered Sign Up screen React element.
+ */
 export default function SignUpScreen() {
   const theme = useTheme();
   const [name, setName] = useState("");

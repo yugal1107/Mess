@@ -18,6 +18,18 @@ import FestivalGreeting from "@/src/components/common/FestivalGreeting";
 const { width } = Dimensions.get("window");
 const isSmallDevice = width < 375;
 
+/**
+ * Render the dashboard screen showing a welcome header, festival greeting,
+ * current subscription details with pull-to-refresh, and quick access menu.
+ *
+ * The screen reads the authenticated user and subscription state, displays a
+ * loading indicator if data is not ready, and conditionally renders one of:
+ * an active subscription card, a pending request card, or a no-subscription card
+ * (which allows requesting a subscription). Pull-to-refresh triggers the
+ * subscription refetch.
+ *
+ * @returns A React element representing the dashboard screen.
+ */
 export default function DashboardScreen() {
   const { user } = useAuth();
   const [subscriptionType, setSubscriptionType] = useState<
