@@ -61,6 +61,8 @@ export default function VerifyOtpScreen() {
     router.replace("/forgot-password");
   };
 
+  const sanitizeOtp = (text: string) => text.replace(/\D/g, "");
+
   return (
     <AuthFormContainer contentContainerStyle={{ paddingBottom: 60 }}>
         <View>
@@ -94,7 +96,7 @@ export default function VerifyOtpScreen() {
             autoComplete="one-time-code"
             maxLength={6}
             value={otp}
-            onChangeText={setOtp}
+            onChangeText={(text) => setOtp(sanitizeOtp(text))}
             disabled={isPending}
             className="mb-4"
             style={{ backgroundColor: theme.colors.surface }}
